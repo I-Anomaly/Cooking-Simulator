@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
         public string description;
         public string utensil;
         public int actionCount; // Number of times an action is performed for this step
+        public string actionType;
         // You can add more fields, e.g., required ingredient, action, etc.
     }
 
@@ -21,9 +22,9 @@ public class GameManager : MonoBehaviour
     // Define recipes
     private List<RecipeStep> herbSoupRecipe = new List<RecipeStep>
     {
-        new RecipeStep { description = "Grind herbs", utensil = "Mortar", actionCount = 3 },
-        new RecipeStep { description = "Add water", utensil = "Pot", actionCount = 1 },
-        new RecipeStep { description = "Stir", utensil = "Spoon", actionCount = 2 }
+        new RecipeStep { description = "Grind herbs", utensil = "Mortar", actionCount = 3, actionType = "Number of actions" },
+        new RecipeStep { description = "Add water", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
+        new RecipeStep { description = "Stir", utensil = "Spoon", actionCount = 2, actionType = "Seconds passed" }
     };
 
     private List<RecipeStep> onionStewRecipe = new List<RecipeStep>
@@ -43,6 +44,10 @@ public class GameManager : MonoBehaviour
     public List<RecipeStep> currentRecipe = new List<RecipeStep>();
     private int currentStepIndex = 0;
     private int actionCount = 0;
+
+    // For steps that require time to pass, e.g., "Seconds passed"
+    private bool isTiming = false; // For steps that require time to pass
+    private float elapsedTime = 0f; // Timer for "Seconds passed" steps
 
     void Start()
     {
@@ -65,6 +70,26 @@ public class GameManager : MonoBehaviour
         currentStepIndex = 0;
         actionCount = 0;
         ShowCurrentStep();
+    }
+
+    private void Update()
+    {
+        // Only run timer for "Seconds passed" steps
+        if (currentRecipe.Count > 0 && currentStepIndex < currentRecipe.Count)
+        {
+            var step = currentRecipe[currentStepIndex];
+            if (step.actionType == "Seconds passed" && isTiming)
+            {
+                elapsedTime += Time.deltaTime;
+                if (elapsedTime >= step.actionCount) // actionCount used as seconds
+                {
+                    isTiming = false;
+                    elapsedTime = 0f;
+                    CompleteCurrentStep();
+                    Debug.Log("Timed step complete. Moving onto next step.");
+                }
+            }
+        }
     }
 
     // Call this when a task is completed
@@ -99,6 +124,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Timed Steps
+    // Call this in OnTriggerEnter for the timed step
+    public void StartTimedAction()
+    {
+        isTiming = true;
+    }
+
+    // Call this in OnTriggerExit for the timed step
+    public void StopTimedAction()
+    {
+        isTiming = false;
+    }
+    #endregion
+
     void ShowCurrentStep()
     {
         Debug.Log("Current Step: " + currentRecipe[currentStepIndex].description);
@@ -107,9 +146,24 @@ public class GameManager : MonoBehaviour
 
     private void OnGUI()
     {
-        if (GUI.Button(new Rect(10, 100, 100, 20), "Complete Step"))
+        if (GUI.Button(new Rect(10, 10, 100, 20), "Complete Step"))
         {
             CompleteCurrentStep();
+        }
+
+        if (GUI.Button(new Rect(10, 30, 100, 20), "Start Timer"))
+        {
+            StartTimedAction();
+        }
+
+        if (GUI.Button(new Rect(10, 50, 100, 20), "Stop Timer"))
+        {
+            StopTimedAction();
+        }
+
+        if (GUI.Button(new Rect(10, 70, 100, 20), "Add Action"))
+        {
+            IncrementAction();
         }
     }
 }
