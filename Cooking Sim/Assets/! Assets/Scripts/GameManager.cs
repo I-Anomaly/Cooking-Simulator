@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -8,46 +9,75 @@ public class GameManager : MonoBehaviour
     [System.Serializable]
     public class RecipeStep
     {
-        public string description;
-        public string utensil;
+        public string description; // Description of the step, e.g., "Slice tomatoes", "Add water to pot"
+        public string utensil; // The utensil required for this step, e.g., "Knife", "Mortar", "Pestle", "Pot"
         public int actionCount; // Number of times an action is performed for this step
-        public string actionType;
-        // You can add more fields, e.g., required ingredient, action, etc.
+        public string actionType; // What type of action this is, e.g., "Instant action", "Number of actions", "Seconds passed"
+        // You can add more fields, e.g., required ingredient, etc.
     }
 
     // Enum for recipe selection
-    public enum RecipeType { HerbSoup, OnionStew, FruitSalad }
-    public RecipeType selectedRecipe = RecipeType.HerbSoup;
+    public enum RecipeType { JollofRice, Fufu }
+    public RecipeType selectedRecipe = RecipeType.Fufu;
 
     // Define recipes
-    private List<RecipeStep> herbSoupRecipe = new List<RecipeStep>
+    private List<RecipeStep> jollofRiceRecipe = new List<RecipeStep>
     {
-        new RecipeStep { description = "Grind herbs", utensil = "Mortar", actionCount = 3, actionType = "Number of actions" },
-        new RecipeStep { description = "Add water", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
-        new RecipeStep { description = "Stir", utensil = "Spoon", actionCount = 2, actionType = "Seconds passed" }
+        new() { description = "Slice tomatoes", utensil = "Knife", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Place in mortar", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Slice peppers", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Place in mortar", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Slice onions", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Place in mortar", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Ground everything into a paste", utensil = "Pestle", actionCount = 5, actionType = "Number of actions" },
+        new() { description = "Add water to pot and bring to a boil", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Add paste, spices, and meat to the stew", utensil = "Pot", actionCount = 3, actionType = "Instant action" },
+        new() { description = "Add rice to the pot; it will absorb the stew into it", utensil = "Pot", actionCount = 3, actionType = "Seconds passed" }, // raycast hit to pot to add rice
+        new() { description = "Stir the rice until all the liquid is absorbed", utensil = "Pot", actionCount = 5, actionType = "Seconds passed" }
     };
 
-    private List<RecipeStep> onionStewRecipe = new List<RecipeStep>
+    private List<RecipeStep> fufuRecipe = new List<RecipeStep>
     {
-        new RecipeStep { description = "Chop onions", utensil = "Knife", actionCount = 2 },
-        new RecipeStep { description = "Fry onions", utensil = "Pan", actionCount = 1 },
-        new RecipeStep { description = "Simmer", utensil = "Pot", actionCount = 1 }
-    };
-
-    private List<RecipeStep> fruitSaladRecipe = new List<RecipeStep>
-    {
-        new RecipeStep { description = "Slice apples", utensil = "Knife", actionCount = 2 },
-        new RecipeStep { description = "Add berries", utensil = "Bowl", actionCount = 1 },
-        new RecipeStep { description = "Mix", utensil = "Spoon", actionCount = 1 }
+        new() { description = "Peel the yams", utensil = "Knife", actionCount = 4, actionType = "Number of actions" },
+        new() { description = "Add water and bring to a boil", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Place yams in water", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Boil yams until they are soft", utensil = "Pot", actionCount = 5, actionType = "Seconds passed" },
+        new() { description = "Drain water", utensil = "Pot", actionCount = 5, actionType = "Seconds passed" },
+        new() { description = "Move yams to mortar", utensil = "Pestle", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Pound yams with pestle", utensil = "Pestle", actionCount = 3, actionType = "Number of actions" },
+        new() { description = "Sprinkle water", utensil = "Water", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Pound yams with pestle", utensil = "Pestle", actionCount = 3, actionType = "Number of actions" },
+        new() { description = "Sprinkle water", utensil = "Water", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Pound yams with pestle", utensil = "Pestle", actionCount = 3, actionType = "Number of actions" },
+        new() { description = "Roll into a ball", utensil = "Hand", actionCount = 3, actionType = "Seconds passed" }
     };
 
     public List<RecipeStep> currentRecipe = new List<RecipeStep>();
+    public TextMeshPro stepText; // Reference to a TextMeshPro world component to display the current step
     private int currentStepIndex = 0;
     private int actionCount = 0;
 
     // For steps that require time to pass, e.g., "Seconds passed"
     private bool isTiming = false; // For steps that require time to pass
     private float elapsedTime = 0f; // Timer for "Seconds passed" steps
+
+    static GameManager instance;
+    public static GameManager Instance
+    {
+        get { return instance; }
+    }
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -56,14 +86,11 @@ public class GameManager : MonoBehaviour
         // Choose recipe based on selectedRecipe
         switch (selectedRecipe)
         {
-            case RecipeType.HerbSoup:
-                currentRecipe = new List<RecipeStep>(herbSoupRecipe);
+            case RecipeType.JollofRice:
+                currentRecipe = new List<RecipeStep>(jollofRiceRecipe);
                 break;
-            case RecipeType.OnionStew:
-                currentRecipe = new List<RecipeStep>(onionStewRecipe);
-                break;
-            case RecipeType.FruitSalad:
-                currentRecipe = new List<RecipeStep>(fruitSaladRecipe);
+            case RecipeType.Fufu:
+                currentRecipe = new List<RecipeStep>(fufuRecipe);
                 break;
         }
 
@@ -95,7 +122,7 @@ public class GameManager : MonoBehaviour
     // Call this when a task is completed
     public void CompleteCurrentStep()
     {
-        // If not at the last step, increment the index and show the next step
+        // If not at the last step, increment the index (recipe step) and show the next step
         currentStepIndex++;
         actionCount = 0; // Reset action count for the next step
         if (currentStepIndex < currentRecipe.Count)
@@ -138,10 +165,18 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    // Display the current step in the TextMeshPro component and in the console
     void ShowCurrentStep()
     {
         Debug.Log("Current Step: " + currentRecipe[currentStepIndex].description);
-        // Update UI here if needed
+        if (stepText != null)
+        {
+            stepText.text = currentRecipe[currentStepIndex].description + " (" + currentRecipe[currentStepIndex].utensil + ")";
+        }
+        else
+        {
+            Debug.LogWarning("No TextMeshPro component assigned to display the step text.");
+        }
     }
 
     private void OnGUI()
