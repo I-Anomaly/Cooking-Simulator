@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 813927390445067816}
   - component: {fileID: 8793484602606366322}
   - component: {fileID: 3067190788999300001}
+  - component: {fileID: -752002784644135552}
   m_Layer: 0
   m_Name: OnionHalf
   m_TagString: Untagged
@@ -292,6 +293,22 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
+--- !u!114 &-752002784644135552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2962512399146941480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
+    type: 3}
+  respawnDistanceThreshold: 15
+  respawnDelay: 1
 --- !u!1001 &3402122820640759544
 PrefabInstance:
   m_ObjectHideFlags: 0
