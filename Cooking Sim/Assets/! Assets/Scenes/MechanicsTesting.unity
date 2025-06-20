@@ -2092,17 +2092,17 @@ PrefabInstance:
     - target: {fileID: 4708706420390231889, guid: da4f18b0b02fbd64f9445ef037c060eb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.9045594
+      value: 1.773
       objectReference: {fileID: 0}
     - target: {fileID: 4708706420390231889, guid: da4f18b0b02fbd64f9445ef037c060eb,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.647995
+      value: 0.869
       objectReference: {fileID: 0}
     - target: {fileID: 4708706420390231889, guid: da4f18b0b02fbd64f9445ef037c060eb,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.031723
+      value: -3.177
       objectReference: {fileID: 0}
     - target: {fileID: 4708706420390231889, guid: da4f18b0b02fbd64f9445ef037c060eb,
         type: 3}
@@ -2139,10 +2139,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6519966032409062588, guid: da4f18b0b02fbd64f9445ef037c060eb,
+        type: 3}
+      propertyPath: m_TagString
+      value: Pestle
+      objectReference: {fileID: 0}
     - target: {fileID: 8820716042572403944, guid: da4f18b0b02fbd64f9445ef037c060eb,
         type: 3}
       propertyPath: m_Name
       value: Pestle
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820716042572403944, guid: da4f18b0b02fbd64f9445ef037c060eb,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6609,6 +6619,46 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8602117773845095463, guid: 6e1486bbece5f7e4ab0b188c749e8e4e,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8602117773845095463, guid: 6e1486bbece5f7e4ab0b188c749e8e4e,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8602117773845095463, guid: 6e1486bbece5f7e4ab0b188c749e8e4e,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2039122435}
+    - target: {fileID: 8602117773845095463, guid: 6e1486bbece5f7e4ab0b188c749e8e4e,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8602117773845095463, guid: 6e1486bbece5f7e4ab0b188c749e8e4e,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: IncrementAction
+      objectReference: {fileID: 0}
+    - target: {fileID: 8602117773845095463, guid: 6e1486bbece5f7e4ab0b188c749e8e4e,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8602117773845095463, guid: 6e1486bbece5f7e4ab0b188c749e8e4e,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8752394717642584685, guid: 6e1486bbece5f7e4ab0b188c749e8e4e,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

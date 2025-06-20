@@ -19,24 +19,31 @@ public class Respawnable : MonoBehaviour
     [SerializeField]
     private float respawnDelay = 1f;
 
+    private Coroutine respawnCoroutine; // Reference to the running coroutine
+
+    private Rigidbody rb; // Reference to the Rigidbody component, if applicable
+
     void Start()
     {
         // Record the initial position and rotation when the game starts
         initialPosition = transform.position;
         initialRotation = transform.rotation;
+
+        // If the object has a Rigidbody, reset its velocity to avoid continued motion
+        rb = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
-        // Check if the object has drifted too far from its original spawn point
-        if (Vector3.Distance(transform.position, initialPosition) > respawnDistanceThreshold)
-        {
-            // Optionally add a delay for the respawn
-            if (respawnDelay > 0f)
-                Invoke("Respawn", respawnDelay);
-            else
-                Respawn();
-        }
+        //// Check if the object has drifted too far from its original spawn point
+        //if (Vector3.Distance(transform.position, initialPosition) > respawnDistanceThreshold)
+        //{
+        //    // Optionally add a delay for the respawn
+        //    if (respawnDelay > 0f)
+        //        Invoke("Respawn", respawnDelay);
+        //    else
+        //        Respawn();
+        //}
     }
 
     // Resets the object's position, rotation, and physics (if applicable)
@@ -51,9 +58,7 @@ public class Respawnable : MonoBehaviour
         // Reset position and rotation
         transform.position = initialPosition;
         transform.rotation = initialRotation;
-
-        // If the object has a Rigidbody, reset its velocity to avoid continued motion
-        Rigidbody rb = GetComponent<Rigidbody>();
+        
         if (rb != null)
         {
             rb.velocity = Vector3.zero;
@@ -61,14 +66,35 @@ public class Respawnable : MonoBehaviour
         }
     }
 
-
-
     private void OnTriggerExit(Collider other)
     {
         // Check if the object has left a designated respawn zone
         if (other.CompareTag("Respawn"))
         {
-            Respawn();
+            Debug.Log("Hit the respawn zone, respawning object.");
+            if (respawnCoroutine == null)
+                respawnCoroutine = StartCoroutine(RespawnAfterDelay());
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Respawn"))
+        {
+            // Cancel the respawn if the object re-enters before the delay is up
+            if (respawnCoroutine != null)
+            {
+                StopCoroutine(respawnCoroutine);
+                respawnCoroutine = null;
+                Debug.Log("Respawn cancelled, object re-entered the zone.");
+            }
+        }
+    }
+
+    private IEnumerator RespawnAfterDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
+        Respawn();
+        respawnCoroutine = null; // Reset the coroutine reference
     }
 }
