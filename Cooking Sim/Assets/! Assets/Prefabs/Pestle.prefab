@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7159896256298885230}
   m_Layer: 0
   m_Name: Colliders
-  m_TagString: Untagged
+  m_TagString: Pestle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,10 +96,9 @@ GameObject:
   - component: {fileID: 1633642234579035446}
   - component: {fileID: 3735861797576568037}
   - component: {fileID: 8669080121376090292}
-  - component: {fileID: 5700618338408171962}
   m_Layer: 0
   m_Name: Pestle
-  m_TagString: Pestle
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -316,21 +315,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
-  respawnDistanceThreshold: 15
-  respawnDelay: 1
---- !u!114 &5700618338408171962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8820716042572403944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  respawnParticleEffect: {fileID: 0}
   respawnDistanceThreshold: 15
   respawnDelay: 1
 --- !u!1001 &7453217048045504764

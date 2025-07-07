@@ -5,6 +5,9 @@ using UnityEngine;
 public class Respawnable : MonoBehaviour
 {
     public GameObject respawnParticleEffect; // Optional particle effect for respawn
+    public AudioClip respawnSound; // Optional sound effect for respawn
+
+    AudioSource audioSource; // Reference to the AudioSource component, if applicable
 
     // Store the object's original position and rotation
     private Vector3 initialPosition;
@@ -31,19 +34,8 @@ public class Respawnable : MonoBehaviour
 
         // If the object has a Rigidbody, reset its velocity to avoid continued motion
         rb = GetComponent<Rigidbody>();
-    }
 
-    void Update()
-    {
-        //// Check if the object has drifted too far from its original spawn point
-        //if (Vector3.Distance(transform.position, initialPosition) > respawnDistanceThreshold)
-        //{
-        //    // Optionally add a delay for the respawn
-        //    if (respawnDelay > 0f)
-        //        Invoke("Respawn", respawnDelay);
-        //    else
-        //        Respawn();
-        //}
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Resets the object's position, rotation, and physics (if applicable)
@@ -63,6 +55,12 @@ public class Respawnable : MonoBehaviour
         {
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+        }
+
+        if (audioSource != null && respawnSound != null)
+        {
+            // Play the respawn sound effect
+            audioSource.PlayOneShot(respawnSound);
         }
     }
 

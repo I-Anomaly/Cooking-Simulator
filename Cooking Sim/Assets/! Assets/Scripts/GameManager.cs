@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     public RecipeType selectedRecipe = RecipeType.Fufu;
 
     // Define recipes
-    private List<RecipeStep> jollofRiceRecipe = new List<RecipeStep>
+    public List<RecipeStep> jollofRiceRecipe = new List<RecipeStep>
     {
         new() { description = "Slice tomatoes", utensil = "Knife", actionCount = 1, actionType = "Instant action" },
         new() { description = "Place in mortar", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
         new() { description = "Stir the rice until all the liquid is absorbed", utensil = "Pot", actionCount = 5, actionType = "Seconds passed" }
     };
 
-    private List<RecipeStep> fufuRecipe = new List<RecipeStep>
+    public List<RecipeStep> fufuRecipe = new List<RecipeStep>
     {
         new() { description = "Peel the yams", utensil = "Knife", actionCount = 4, actionType = "Number of actions" },
         new() { description = "Add water and bring to a boil", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
@@ -54,8 +54,8 @@ public class GameManager : MonoBehaviour
 
     public List<RecipeStep> currentRecipe = new List<RecipeStep>();
     public TextMeshPro stepText; // Reference to a TextMeshPro world component to display the current step
-    private int currentStepIndex = 0;
-    private int actionCount = 0;
+    public int currentStepIndex = 0;
+    public int actionCount = 0;
 
     // For steps that require time to pass, e.g., "Seconds passed"
     private bool isTiming = false; // For steps that require time to pass
