@@ -173,7 +173,7 @@ MonoBehaviour:
   m_SnapToColliderVolume: 1
   m_ReinitializeDynamicAttachEverySingleGrab: 1
   m_AttachEaseInTime: 0.15
-  m_MovementType: 2
+  m_MovementType: 0
   m_VelocityDamping: 1
   m_VelocityScale: 1
   m_AngularVelocityDamping: 1
@@ -229,6 +229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
+  respawnSound: {fileID: 0}
   respawnDistanceThreshold: 15
   respawnDelay: 1
 --- !u!1 &6806111155119011207
