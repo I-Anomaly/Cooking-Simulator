@@ -23,12 +23,9 @@ public class GameManager : MonoBehaviour
     // Define recipes
     public List<RecipeStep> jollofRiceRecipe = new List<RecipeStep>
     {
-        new() { description = "Slice tomatoes", utensil = "Knife", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Place in mortar", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Slice peppers", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Place in mortar", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Slice onions", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Place in mortar", utensil = "Mortar", actionCount = 1, actionType = "Instant action" },
+        new() { description = "Slice tomatoes and place in mortar", utensil = "Mortar", actionCount = 3, actionType = "Number of actions" },
+        new() { description = "Slice peppers and place in mortar", utensil = "Mortar", actionCount = 2, actionType = "Number of actions" },
+        new() { description = "Slice onions and place in mortar", utensil = "Mortar", actionCount = 2, actionType = "Number of actions" },
         new() { description = "Ground everything into a paste", utensil = "Pestle", actionCount = 5, actionType = "Number of actions" },
         new() { description = "Add water to pot and bring to a boil", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
         new() { description = "Add paste, spices, and meat to the stew", utensil = "Pot", actionCount = 3, actionType = "Instant action" },
@@ -122,9 +119,10 @@ public class GameManager : MonoBehaviour
     // Call this when a task is completed
     public void CompleteCurrentStep()
     {
+        actionCount = 0; // Reset action count for the next step
         // If not at the last step, increment the index (recipe step) and show the next step
         currentStepIndex++;
-        actionCount = 0; // Reset action count for the next step
+        Debug.Log("Complete the current step, reset the action count (" + actionCount + "), increment the step index, and show the next step.");
         if (currentStepIndex < currentRecipe.Count)
         {
             ShowCurrentStep();
@@ -139,11 +137,12 @@ public class GameManager : MonoBehaviour
     // Use this to handle doing an action 'x' amount of times
     public void IncrementAction()
     {
+        Debug.Log("Incrementing action count. The current action count is " + actionCount + " and after this it should be " + (actionCount + 1));
         actionCount++;
         if (actionCount >= currentRecipe[currentStepIndex].actionCount)
         {
-            CompleteCurrentStep(); // Automatically complete the step if action count is met
             Debug.Log("Step completed: " + currentRecipe[currentStepIndex].description + ". Moving onto next step.");
+            CompleteCurrentStep(); // Automatically complete the step if action count is met
         }
         else
         {
@@ -168,7 +167,7 @@ public class GameManager : MonoBehaviour
     // Display the current step in the TextMeshPro component and in the console
     void ShowCurrentStep()
     {
-        Debug.Log("Current Step: " + currentRecipe[currentStepIndex].description);
+        Debug.Log("Current Step: " + currentRecipe[currentStepIndex].description + " and it must be done " + currentRecipe[currentStepIndex].actionCount + " times.");
         if (stepText != null)
         {
             stepText.text = currentRecipe[currentStepIndex].description + " (" + currentRecipe[currentStepIndex].utensil + ")";

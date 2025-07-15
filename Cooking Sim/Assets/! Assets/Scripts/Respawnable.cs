@@ -13,11 +13,6 @@ public class Respawnable : MonoBehaviour
     private Vector3 initialPosition;
     private Quaternion initialRotation;
 
-    // Set a threshold distance. If the object is farther than this
-    // from its starting point, it will respawn.
-    [SerializeField]
-    private float respawnDistanceThreshold = 15f;  // Adjust as needed
-
     // Optional delay (in seconds) before the respawn occurs
     [SerializeField]
     private float respawnDelay = 1f;
@@ -48,9 +43,7 @@ public class Respawnable : MonoBehaviour
         }
 
         // Reset position and rotation
-        transform.position = initialPosition;
-        transform.rotation = initialRotation;
-        
+        transform.SetPositionAndRotation(initialPosition, initialRotation);
         if (rb != null)
         {
             rb.velocity = Vector3.zero;
