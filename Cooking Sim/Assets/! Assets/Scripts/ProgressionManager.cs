@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static GameManager;
 
 public class ProgressionManager : MonoBehaviour
 {
@@ -102,7 +103,7 @@ public class ProgressionManager : MonoBehaviour
         switch (stepType)
         {
             case StepType.Seconds:
-                if (step.actionType == "Seconds passed")
+                if (step.actionType == ActionType.SecondsPassed)
                 {
                     Debug.Log("Timing action for step: " + step.description);
                     gm.StartTimedAction();
@@ -132,21 +133,22 @@ public class ProgressionManager : MonoBehaviour
         switch (stepType)
         {
             case StepType.Instant:
-                if (step.actionType == "Instant action")
+                // I really don't think it needs to double check the action type but better safe than sorry
+                if (step.actionType == ActionType.InstantAction)
                 {
                     Debug.Log("Performing instant action for step: " + step.description);
                     gm.CompleteCurrentStep();
                 }
                 break;
             case StepType.Actions:
-                if (step.actionType == "Number of actions")
+                if (step.actionType == ActionType.NumberOfActions)
                 {
                     Debug.Log("Performing action for step: " + step.description);
                     gm.IncrementAction();
                 }
                 break;
             case StepType.Seconds:
-                if (step.actionType == "Seconds passed")
+                if (step.actionType == ActionType.SecondsPassed)
                 {
                     Debug.Log("Timing action for step: " + step.description);
                     // Call gm.StartTimedAction() and gm.StopTimedAction() as needed from your trigger events

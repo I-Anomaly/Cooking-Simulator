@@ -10,11 +10,18 @@ public class GameManager : MonoBehaviour
     public class RecipeStep
     {
         public string description; // Description of the step, e.g., "Slice tomatoes", "Add water to pot"
-        public string utensil; // The utensil required for this step, e.g., "Knife", "Mortar", "Pestle", "Pot"
+        public string utensil; // The utensil required for this step, e.g., "Knife", "Mortar", "Pestle", "Pot", this could maybe be removed
         public int actionCount; // Number of times an action is performed for this step
-        public string actionType; // What type of action this is, e.g., "Instant action", "Number of actions", "Seconds passed"
+        public ActionType actionType; // What type of action this is, e.g., "Instant action", "Number of actions", "Seconds passed"
         public AudioClip voiceClip; // Assign in Inspector
         // You can add more fields, e.g., required ingredient, etc.
+    }
+
+    public enum ActionType
+    {
+        InstantAction,
+        NumberOfActions,
+        SecondsPassed
     }
 
     // Enum for recipe selection
@@ -24,30 +31,30 @@ public class GameManager : MonoBehaviour
     // Define recipes
     public List<RecipeStep> jollofRiceRecipe = new List<RecipeStep>
     {
-        new() { description = "Slice tomatoes and place in mortar", utensil = "Mortar", actionCount = 3, actionType = "Number of actions" },
-        new() { description = "Slice peppers and place in mortar", utensil = "Mortar", actionCount = 2, actionType = "Number of actions" },
-        new() { description = "Slice onions and place in mortar", utensil = "Mortar", actionCount = 2, actionType = "Number of actions" },
-        new() { description = "Ground everything into a paste", utensil = "Pestle", actionCount = 5, actionType = "Number of actions" },
-        new() { description = "Add water to pot and bring to a boil", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Add paste, spices, and meat to the stew", utensil = "Pot", actionCount = 3, actionType = "Instant action" },
-        new() { description = "Add rice to the pot; it will absorb the stew into it", utensil = "Pot", actionCount = 3, actionType = "Seconds passed" }, // raycast hit to pot to add rice
-        new() { description = "Stir the rice until all the liquid is absorbed", utensil = "Pot", actionCount = 5, actionType = "Seconds passed" }
+        new() { description = "Slice tomatoes and place in mortar", utensil = "Mortar", actionCount = 3, actionType = ActionType.NumberOfActions },
+        new() { description = "Slice peppers and place in mortar", utensil = "Mortar", actionCount = 2, actionType = ActionType.NumberOfActions },
+        new() { description = "Slice onions and place in mortar", utensil = "Mortar", actionCount = 2, actionType = ActionType.NumberOfActions },
+        new() { description = "Ground everything into a paste", utensil = "Pestle", actionCount = 5, actionType = ActionType.NumberOfActions },
+        new() { description = "Add water to pot and bring to a boil", utensil = "Pot", actionCount = 1, actionType = ActionType.InstantAction },
+        new() { description = "Add paste, spices, and meat to the stew", utensil = "Pot", actionCount = 3, actionType = ActionType.InstantAction },
+        new() { description = "Add rice to the pot; it will absorb the stew into it", utensil = "Pot", actionCount = 3, actionType = ActionType.SecondsPassed }, // raycast hit to pot to add rice
+        new() { description = "Stir the rice until all the liquid is absorbed", utensil = "Pot", actionCount = 5, actionType = ActionType.SecondsPassed }
     };
 
     public List<RecipeStep> fufuRecipe = new List<RecipeStep>
     {
-        new() { description = "Peel the yams", utensil = "Knife", actionCount = 4, actionType = "Number of actions" },
-        new() { description = "Add water and bring to a boil", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Place yams in water", utensil = "Pot", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Boil yams until they are soft", utensil = "Pot", actionCount = 5, actionType = "Seconds passed" },
-        new() { description = "Drain water", utensil = "Pot", actionCount = 5, actionType = "Seconds passed" },
-        new() { description = "Move yams to mortar", utensil = "Pestle", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Pound yams with pestle", utensil = "Pestle", actionCount = 3, actionType = "Number of actions" },
-        new() { description = "Sprinkle water", utensil = "Water", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Pound yams with pestle", utensil = "Pestle", actionCount = 3, actionType = "Number of actions" },
-        new() { description = "Sprinkle water", utensil = "Water", actionCount = 1, actionType = "Instant action" },
-        new() { description = "Pound yams with pestle", utensil = "Pestle", actionCount = 3, actionType = "Number of actions" },
-        new() { description = "Roll into a ball", utensil = "Hand", actionCount = 3, actionType = "Seconds passed" }
+        new() { description = "Peel the yams", utensil = "Knife", actionCount = 4, actionType = ActionType.NumberOfActions },
+        new() { description = "Add water and bring to a boil", utensil = "Pot", actionCount = 1, actionType = ActionType.InstantAction },
+        new() { description = "Place yams in water", utensil = "Pot", actionCount = 1, actionType = ActionType.InstantAction },
+        new() { description = "Boil yams until they are soft", utensil = "Pot", actionCount = 5, actionType = ActionType.SecondsPassed },
+        new() { description = "Drain water", utensil = "Pot", actionCount = 5, actionType = ActionType.SecondsPassed },
+        new() { description = "Move yams to mortar", utensil = "Pestle", actionCount = 1, actionType = ActionType.InstantAction },
+        new() { description = "Pound yams with pestle", utensil = "Pestle", actionCount = 3, actionType = ActionType.NumberOfActions },
+        new() { description = "Sprinkle water", utensil = "Water", actionCount = 1, actionType = ActionType.InstantAction },
+        new() { description = "Pound yams with pestle", utensil = "Pestle", actionCount = 3, actionType = ActionType.NumberOfActions },
+        new() { description = "Sprinkle water", utensil = "Water", actionCount = 1, actionType = ActionType.InstantAction },
+        new() { description = "Pound yams with pestle", utensil = "Pestle", actionCount = 3, actionType = ActionType.NumberOfActions },
+        new() { description = "Roll into a ball", utensil = "Hand", actionCount = 3, actionType = ActionType.SecondsPassed }
     };
 
     public List<RecipeStep> currentRecipe = new List<RecipeStep>();
@@ -107,7 +114,7 @@ public class GameManager : MonoBehaviour
         if (currentRecipe.Count > 0 && currentStepIndex < currentRecipe.Count)
         {
             var step = currentRecipe[currentStepIndex];
-            if (step.actionType == "Seconds passed" && isTiming)
+            if (step.actionType == ActionType.SecondsPassed && isTiming)
             {
                 elapsedTime += Time.deltaTime;
                 if (elapsedTime >= step.actionCount) // actionCount used as seconds
