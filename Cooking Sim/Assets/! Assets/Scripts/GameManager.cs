@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
         public string utensil; // The utensil required for this step, e.g., "Knife", "Mortar", "Pestle", "Pot"
         public int actionCount; // Number of times an action is performed for this step
         public string actionType; // What type of action this is, e.g., "Instant action", "Number of actions", "Seconds passed"
+        public AudioClip voiceClip; // Assign in Inspector
         // You can add more fields, e.g., required ingredient, etc.
     }
 
@@ -58,6 +59,8 @@ public class GameManager : MonoBehaviour
     private bool isTiming = false; // For steps that require time to pass
     private float elapsedTime = 0f; // Timer for "Seconds passed" steps
 
+    private AudioSource audioSource; // Assign in Inspector
+
     static GameManager instance;
     public static GameManager Instance
     {
@@ -90,6 +93,8 @@ public class GameManager : MonoBehaviour
                 currentRecipe = new List<RecipeStep>(fufuRecipe);
                 break;
         }
+
+        audioSource = GetComponent<AudioSource>();
 
         currentStepIndex = 0;
         actionCount = 0;
@@ -167,6 +172,14 @@ public class GameManager : MonoBehaviour
     // Display the current step in the TextMeshPro component and in the console
     void ShowCurrentStep()
     {
+        // Play audio for the current step if available
+        var step = currentRecipe[currentStepIndex];
+        if (audioSource != null && step.voiceClip != null)
+        {
+            audioSource.clip = step.voiceClip;
+            audioSource.Play();
+        }
+
         Debug.Log("Current Step: " + currentRecipe[currentStepIndex].description + " and it must be done " + currentRecipe[currentStepIndex].actionCount + " times.");
         if (stepText != null)
         {
