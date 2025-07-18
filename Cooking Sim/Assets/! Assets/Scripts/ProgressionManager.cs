@@ -105,8 +105,7 @@ public class ProgressionManager : MonoBehaviour
             case StepType.Seconds:
                 if (step.actionType == ActionType.SecondsPassed)
                 {
-                    Debug.Log("Timing action for step: " + step.description);
-                    gm.StartTimedAction();
+                    gm.StopTimedAction();
                 }
                 break;
         }
