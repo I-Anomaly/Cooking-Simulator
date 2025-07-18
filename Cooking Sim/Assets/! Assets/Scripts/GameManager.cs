@@ -162,6 +162,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This is used for any situation where you need to reduce the action count, such as when an action is undone or a step is reset.
+    /// * It will not allow the action count to go below zero.
+    /// </summary>
+    public void ReduceAction()
+    {
+        if (actionCount > 0)
+        {
+            actionCount--;
+            Debug.Log("Action count reduced. Current action count: " + actionCount);
+        }
+        else
+        {
+            Debug.LogWarning("Action count is already at zero, cannot reduce further.");
+        }
+    }
+
     #region Timed Steps
     // Call this in OnTriggerEnter for the timed step
     public void StartTimedAction()

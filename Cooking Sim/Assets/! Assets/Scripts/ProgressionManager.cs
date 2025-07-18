@@ -94,6 +94,9 @@ public class ProgressionManager : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
+        if (other.CompareTag(requiredTag) == false) {
+            return;
+        }
         GameObject otherRoot = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.gameObject;
         triggeredObjects.Remove(otherRoot);
 
@@ -106,6 +109,13 @@ public class ProgressionManager : MonoBehaviour
                 if (step.actionType == ActionType.SecondsPassed)
                 {
                     gm.StopTimedAction();
+                }
+                break;
+            case StepType.Actions:
+                if (step.actionType == ActionType.NumberOfActions)
+                {
+                    // If the item is taken out, reduce the action count (it will not proceed until ALL items are in)
+                    gm.ReduceAction();
                 }
                 break;
         }

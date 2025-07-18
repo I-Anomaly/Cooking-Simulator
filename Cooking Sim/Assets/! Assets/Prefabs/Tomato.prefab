@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4792629879057310347}
   - component: {fileID: 7509503853930291811}
   - component: {fileID: 8163842233324510558}
+  - component: {fileID: 4064609409379749738}
   m_Layer: 0
   m_Name: Tomato
   m_TagString: Untagged
@@ -231,8 +232,26 @@ MonoBehaviour:
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
   respawnSound: {fileID: 0}
-  respawnDistanceThreshold: 15
   respawnDelay: 1
+--- !u!114 &4064609409379749738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2893088143754163942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781a85435023c404c96842ade7b04b68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HalfsPrefab: {fileID: 2637479666003987539, guid: a21ac0210a50c6345bb9279ecfaa6793,
+    type: 3}
+  isCut: 0
+  cuttingSounds:
+  - {fileID: 8300000, guid: 4e0d5e0e853f95546aadbaee10769229, type: 3}
+  - {fileID: 8300000, guid: 951cf51f00e993747979c22dce3da7f4, type: 3}
+  - {fileID: 8300000, guid: 6283ff71121e38a46b5e278df5b6d869, type: 3}
 --- !u!1 &4984389813771834383
 GameObject:
   m_ObjectHideFlags: 0

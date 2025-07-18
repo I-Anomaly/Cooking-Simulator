@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 8793484602606366322}
   - component: {fileID: 3067190788999300001}
   - component: {fileID: -752002784644135552}
+  - component: {fileID: 8562340269098529859}
   m_Layer: 0
   m_Name: OnionHalf
   m_TagString: Untagged
@@ -308,8 +309,24 @@ MonoBehaviour:
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
   respawnSound: {fileID: 0}
-  respawnDistanceThreshold: 15
   respawnDelay: 1
+--- !u!114 &8562340269098529859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2962512399146941480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 664b0b2f77a77dc4b826982460e0e94f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentRecipeStep: 2
+  stepType: 2
+  utensilType: 
+  requiredTag: Mortar
+  disableOnComplete: 1
 --- !u!1001 &3402122820640759544
 PrefabInstance:
   m_ObjectHideFlags: 0
