@@ -20,11 +20,25 @@ public class CampFire : MonoBehaviour
     public void IncrementProgress()
     {
         count++;
-        gm.IncrementAction();
         if (count >= gm.currentRecipe[gm.currentStepIndex].actionCount)
         {
-            fireGameObject.SetActive(true); // Activate the fire effect
+            Debug.Log("Enable fire effect");
+            if (fireGameObject == null)
+            {
+                Debug.LogError("fireGameObject is not assigned!");
+                return;
+            }
+
+            fireGameObject.SetActive(true); // Ensure the object is enabled
+
+            //// Play all particle systems on the fireGameObject and its children
+            //var particleSystems = fireGameObject.GetComponentsInChildren<ParticleSystem>(true);
+            //foreach (var ps in particleSystems)
+            //{
+            //    ps.Play();
+            //}
         }
+        gm.IncrementAction();
     }
 
     public void DecrementProgress()

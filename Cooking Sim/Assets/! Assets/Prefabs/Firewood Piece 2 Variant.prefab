@@ -91,6 +91,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -475525422599415090, guid: 678dbe3feab5af04d9df44eba9d6b19b,
+        type: 3}
+      propertyPath: respawnParticleEffect
+      value: 
+      objectReference: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
+        type: 3}
     - target: {fileID: 2129231377376440282, guid: 678dbe3feab5af04d9df44eba9d6b19b,
         type: 3}
       propertyPath: m_Name
@@ -159,8 +165,33 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7802862980793898464}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2129231377376440282, guid: 678dbe3feab5af04d9df44eba9d6b19b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8490604606270917148}
   m_SourcePrefab: {fileID: 100100000, guid: 678dbe3feab5af04d9df44eba9d6b19b, type: 3}
+--- !u!1 &2988377579984060239 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2129231377376440282, guid: 678dbe3feab5af04d9df44eba9d6b19b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3815768498204020885}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-8490604606270917148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2988377579984060239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawnParticleEffect: {fileID: 0}
+  respawnSound: {fileID: 0}
+  respawnDelay: 1
 --- !u!4 &9054064843756057346 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5283519758916723607, guid: 678dbe3feab5af04d9df44eba9d6b19b,
