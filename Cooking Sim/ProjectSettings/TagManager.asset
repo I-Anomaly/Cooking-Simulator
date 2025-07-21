@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Pestle
   - Mortar
+  - Spoon
+  - Water
+  - Fish
   layers:
   - Default
   - TransparentFX

@@ -26,7 +26,7 @@ public class RicePourDetector : MonoBehaviour
         currentThreshold = Mathf.Lerp(-1f,PourThreshold,fillLevel);
         bool pourcheck = CalculateDotProduct() < currentThreshold;
         if (pourcheck)
-            Debug.Log("Pour Water!");
+            // Debug.Log("Pour Water!");
 
         if(isPouring)
         {

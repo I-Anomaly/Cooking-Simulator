@@ -62,7 +62,7 @@ public class Respawnable : MonoBehaviour
         // Check if the object has left a designated respawn zone
         if (other.CompareTag("Respawn"))
         {
-            Debug.Log("Hit the respawn zone, respawning object.");
+            // Debug.Log("Hit the respawn zone, respawning object.");
             if (respawnCoroutine == null)
                 respawnCoroutine = StartCoroutine(RespawnAfterDelay());
         }
@@ -77,7 +77,7 @@ public class Respawnable : MonoBehaviour
             {
                 StopCoroutine(respawnCoroutine);
                 respawnCoroutine = null;
-                Debug.Log("Respawn cancelled, object re-entered the zone.");
+                // Debug.Log("Respawn cancelled, object re-entered the zone.");
             }
         }
     }

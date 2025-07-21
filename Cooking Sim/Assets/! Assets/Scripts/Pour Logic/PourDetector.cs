@@ -27,7 +27,7 @@ public class PourDetector : MonoBehaviour
         // if (pourCheck) Debug.Log("POUR WATER");
         if (isPouring)
         {
-            fillLevel -= drainRate * Time.deltaTime; // Drain the fill level based on the drain rate and time
+            // fillLevel -= drainRate * Time.deltaTime; // Drain the fill level based on the drain rate and time
             fillLevel = Mathf.Clamp(fillLevel, 0f, maxFill); // Ensure the fill level does not exceed the maximum or go below zero
         }
 
@@ -62,7 +62,7 @@ public class PourDetector : MonoBehaviour
 
     private void OnGUI()
     {
-        if (GUI.Button(new Rect(10, 10, 100, 20), "Refill"))
+        if (GUI.Button(new Rect(150, 10, 100, 20), "Refill"))
         {
             Refill(); // Button to refill the object
         }

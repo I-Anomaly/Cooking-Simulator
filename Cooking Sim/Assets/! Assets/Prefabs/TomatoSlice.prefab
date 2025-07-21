@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8320083927328729701}
   - component: {fileID: -6409563839319669782}
   - component: {fileID: 159160048397603935}
+  - component: {fileID: -9044273617975901498}
   m_Layer: 0
   m_Name: TomatoSlice
   m_TagString: Untagged
@@ -244,11 +245,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 664b0b2f77a77dc4b826982460e0e94f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentRecipeStep: 0
+  currentRecipeStep: 1
   stepType: 2
   utensilType: 
   requiredTag: Mortar
   disableOnComplete: 1
+--- !u!114 &-9044273617975901498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2637479666003987539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84574f81684650d4dace76e9ee9d18bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  disableAtStep: 5
 --- !u!1001 &3877562463154918270
 PrefabInstance:
   m_ObjectHideFlags: 0

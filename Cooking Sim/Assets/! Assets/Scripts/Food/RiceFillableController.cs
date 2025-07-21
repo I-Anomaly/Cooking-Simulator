@@ -30,4 +30,14 @@ public class RiceFillableController : MonoBehaviour
 
         FillableObject.localScale = new Vector3(1, CurrentFill, 1);
     }
+
+    // Call this when hit by the rice stream
+    public void OnRiceStreamHit()
+    {
+        Debug.Log("Rice stream hit the fillable object, starting to fill.");
+        if (GameManager.Instance != null && GameManager.Instance.currentStepIndex == 7)
+        {
+            GameManager.Instance.StartTimedAction();
+        }
+    }
 }

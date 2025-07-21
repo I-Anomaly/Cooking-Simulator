@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,7 +17,6 @@ public class GameManager : MonoBehaviour
         public AudioClip voiceClip; // Assign in Inspector
         // You can add more fields, e.g., required ingredient, etc.
     }
-
     public enum ActionType
     {
         InstantAction,
@@ -67,6 +67,17 @@ public class GameManager : MonoBehaviour
     private float elapsedTime = 0f; // Timer for "Seconds passed" steps
 
     private AudioSource audioSource; // Assign in Inspector
+
+    [Space(10)]
+    [Header("Jollof Rice Recipe Objects")]
+    public GameObject[] jollofVeggies;
+    public GameObject mashedTexture; // This is the mashed texture for the jollof rice, which will be enabled when the veggies are mashed
+    public GameObject mortar; // The mortar object for the jollof rice recipe
+
+    [Space(10)]
+    [Header("Recipe Complete!")]
+    public GameObject particleEffect;
+    public AudioClip celebration;
 
     static GameManager instance;
     public static GameManager Instance
@@ -137,12 +148,45 @@ public class GameManager : MonoBehaviour
         Debug.Log("Complete the current step, reset the action count (" + actionCount + "), increment the step index, and show the next step.");
         if (currentStepIndex < currentRecipe.Count)
         {
+            // This is a VERY lazy way to disable the jollof veggies, but it works for now
+            if (RecipeType.JollofRice == selectedRecipe && currentStepIndex == 5)
+            {
+                mashedTexture.SetActive(true); // Enable the mashed texture
+
+                // Set the mortar to be interactable at this point
+                // Get the XRGrabInteractable component
+                XRGrabInteractable grab = mortar.GetComponent<XRGrabInteractable>();
+                if (grab != null)
+                {
+                    grab.enabled = true; // Enable the grab component
+                }
+
+                // Get the Rigidbody and disable kinematic
+                Rigidbody rb = mortar.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.isKinematic = false;
+                }
+            }
+
             ShowCurrentStep();
         }
         else
         {
             Debug.Log("Recipe complete!");
             // Handle recipe completion
+            if (stepText != null)
+            {
+                stepText.text = "Recipe Complete!";
+            }
+            if (particleEffect != null)
+            {
+                Instantiate(particleEffect, stepText.transform.position, Quaternion.identity);
+            }
+            if (audioSource != null && celebration != null)
+            {
+                audioSource.PlayOneShot(celebration);
+            }
         }
     }
 

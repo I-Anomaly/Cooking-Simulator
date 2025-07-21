@@ -72,8 +72,10 @@ public class RiceStream : MonoBehaviour
             // Interact with Fillable container
             RiceFillableController fillable = hit.collider.GetComponent<RiceFillableController>();
             if (fillable != null)
-                fillable.Fill(1);
-
+            {
+                // fillable.Fill(1);
+                fillable.OnRiceStreamHit(); // Call the method to handle rice stream hit
+            }
             return hit.point;
         }
 
