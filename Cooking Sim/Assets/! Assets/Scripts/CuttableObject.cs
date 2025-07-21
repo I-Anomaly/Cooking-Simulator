@@ -31,8 +31,6 @@ public class CuttableObject : MonoBehaviour
                 int randomIndex = Random.Range(0, cuttingSounds.Length);
                 audioSource.PlayOneShot(cuttingSounds[randomIndex]);
             }
-            if (progressionManager != null)
-                progressionManager.TryProgressStep(); // Attempt to progress the recipe step
             isCut = true;
             Destroy(this.gameObject);
 

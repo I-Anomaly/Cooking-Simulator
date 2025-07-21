@@ -176,6 +176,7 @@ public class ProgressionManager : MonoBehaviour
                 {
                     Debug.Log("Timing action for step: " + step.description);
                     // Call gm.StartTimedAction() and gm.StopTimedAction() as needed from your trigger events
+                    gm.StartTimedAction();
                 }
                 else
                 {
