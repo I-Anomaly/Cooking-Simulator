@@ -21,13 +21,6 @@ public class FillableController : MonoBehaviour
     private float colorChangeTimer = 0f;
     private bool isFullyRed = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        maxFill = 0.1f; // Assuming the fillable object is scaled in the Y direction
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -70,7 +63,7 @@ public class FillableController : MonoBehaviour
             if (recipe == GameManager.RecipeType.JollofRice)
             {
                 // Jollof logic
-                if (currentFill >= maxFill && step == 5 && streamType == StreamType.Oil)
+                if (currentFill >= maxFill && step == 4 && streamType == StreamType.Oil)
                     GameManager.Instance.CompleteCurrentStep();
                 else if (step == 6 && streamType == StreamType.Sauce)
                 {
