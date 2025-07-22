@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
     [Header("Jollof Rice Recipe Objects")]
     public GameObject[] jollofVeggies;
     public GameObject mashedTexture; // This is the mashed texture for the jollof rice, which will be enabled when the veggies are mashed
+    public int mashedTextureIndex = 4; // The index of the step where the mashed texture should be enabled
     public GameObject mortar; // The mortar object for the jollof rice recipe
 
     [Space(10)]
@@ -168,7 +169,7 @@ public class GameManager : MonoBehaviour
         if (currentStepIndex < currentRecipe.Count)
         {
             // This is a VERY lazy way to disable the jollof veggies, but it works for now
-            if (RecipeType.JollofRice == selectedRecipe && currentStepIndex == 4)
+            if (RecipeType.JollofRice == selectedRecipe && currentStepIndex == mashedTextureIndex)
             {
                 mashedTexture.SetActive(true); // Enable the mashed texture
 
