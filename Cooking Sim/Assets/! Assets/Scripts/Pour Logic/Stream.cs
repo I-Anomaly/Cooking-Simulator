@@ -13,7 +13,7 @@ public class Stream : MonoBehaviour
 
     bool beginPour, endPour; // Flags to control pouring state
 
-    public enum StreamType { Water, Sauce, Oil }
+    public enum StreamType { Water, Sauce, Oil, Rice }
     public StreamType streamType; // Set this in the inspector for each stream object
 
     private void Awake()
@@ -25,36 +25,45 @@ public class Stream : MonoBehaviour
     private void Start()
     {
         // 0 and 1 are the indices of the positions in the LineRenderer, it'll stretch the line between these two points
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, transform.position); // Initialize the second position to the same as the first
+        if (lineRenderer != null)
+        {
+            lineRenderer.SetPosition(0, transform.position);
+            lineRenderer.SetPosition(1, transform.position); // Initialize the second position to the same as the first}
+        }
     }
 
     private void Update()
     {
-        if (beginPour)
-        {
-            targetPosition = FindEndPoint(); // Find the end point where the stream should go
-
-            lineRenderer.SetPosition(0, transform.position);
-            AnimateToPosition(1, targetPosition); // Animate the second position towards the target position
-        }
-        else if (endPour)
-        {
-            if (!hasReachedPosition(0, targetPosition))
+        if (lineRenderer != null) { 
+            if (beginPour)
             {
-                AnimateToPosition(0, targetPosition); // Animate the first position towards the target position
+                targetPosition = FindEndPoint(); // Find the end point where the stream should go
+
+
+                lineRenderer.SetPosition(0, transform.position);
                 AnimateToPosition(1, targetPosition); // Animate the second position towards the target position
             }
-            else
+            else if (endPour)
             {
-                Destroy(gameObject); // Destroy the stream when pouring ends }
+                if (!hasReachedPosition(0, targetPosition))
+                {
+                    AnimateToPosition(0, targetPosition); // Animate the first position towards the target position
+                    AnimateToPosition(1, targetPosition); // Animate the second position towards the target position
+                }
+                else
+                {
+                    Destroy(gameObject); // Destroy the stream when pouring ends }
+                }
             }
         }
 
-        splashParticle.gameObject.transform.position = targetPosition; // Position the splash particle at the pour point
-        splashParticle.transform.rotation = Quaternion.identity; // Reset rotation to avoid any unwanted rotation effects
-        bool isHitting = hasReachedPosition(1, targetPosition); // Check if the stream is hitting the target position
-        splashParticle.gameObject.SetActive(isHitting); // Activate the particle system only if the stream is hitting the target position
+        if (splashParticle != null)
+        {
+            splashParticle.gameObject.transform.position = targetPosition; // Position the splash particle at the pour point
+            splashParticle.transform.rotation = Quaternion.identity; // Reset rotation to avoid any unwanted rotation effects
+            bool isHitting = hasReachedPosition(1, targetPosition); // Check if the stream is hitting the target position
+            splashParticle.gameObject.SetActive(isHitting); // Activate the particle system only if the stream is hitting the target position
+        }
     }
 
     public void Begin()
@@ -74,7 +83,7 @@ public class Stream : MonoBehaviour
         Ray ray = new Ray(transform.position, Vector3.down); // Cast a ray downwards from the stream's position
         if (Physics.Raycast(ray, out hit, 10f))
         {
-            // Debug.Log($"Hit: {hit.collider.gameObject.name} at {hit.point}"); // Log the hit information
+            //Debug.Log($"Hit: {hit.collider.gameObject.name} at {hit.point}"); // Log the hit information
             FillableController fillable = hit.collider.gameObject.GetComponent<FillableController>(); // Check if the hit object has a FillableController component, though you could use tags instead later
             if (fillable != null)
             {

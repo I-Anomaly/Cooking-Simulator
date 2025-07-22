@@ -13,15 +13,36 @@ public class FillableController : MonoBehaviour
 
     [Space(10)]
     // For step 6 logic
-    [Header("Jollof Step 6 Settings")]
+    [Header("Jollof Oil Settings")]
+    public int jollofOilStepIndex = 4; // The step index for Jollof Rice Step 4
     public Renderer fillableRenderer; // Assign in inspector, the renderer of the fillable object
-    public float colorChangeDuration = 2f; // Time in seconds to fully change to red
+
+    [Header("Jollof Water Settings")]
+    public float colorChangeDuration = 2f; // Time in seconds to fully change to blue
+    public int jollofWaterStepIndex = 7; // The step index for Jollof Rice Step 6
+
+    [Header("Jollof Spices Settings")]
+    public int jollofSpicesStepIndex = 5; // The step index for Jollof Rice Step 5
+
+    [Header("Jollof Rice Settings")]
+    public GameObject ricePile;
+    public int jollofRiceStepIndex = 6; // The step index for Jollof Rice Step 5
 
     private bool isChangingColor = false;
     private float colorChangeTimer = 0f;
     private bool isFullyRed = false;
 
-    // Update is called once per frame
+    private bool isStepTimerActive = false;
+    private float stepTimer = 0f;
+    private float stepTimerDuration = 0f;
+
+    GameManager gm;
+    private void Start()
+    {
+        // Get the game manager instance
+        gm = GameManager.Instance;
+    }
+
     void Update()
     {
         // Step 6: Change color to red over time
@@ -46,47 +67,126 @@ public class FillableController : MonoBehaviour
                 CheckStepCompletion();
             }
         }
+
+        if (isStepTimerActive)
+        {
+            stepTimer += Time.deltaTime;
+            if (stepTimer >= stepTimerDuration)
+            {
+                isStepTimerActive = false;
+                gm.CompleteCurrentStep();
+            }
+            Debug.Log($"Step timer: {stepTimer}/{stepTimerDuration} seconds");
+        }
     }
 
     // This is so nasty of a way to go about it ... it doesn't take into account the different recipes
     public void Fill(float amount, StreamType streamType)
     {
-        currentFill += amount * fillRate * Time.deltaTime;
-        currentFill = Mathf.Clamp(currentFill, 0, maxFill);
-        fillableObject.localScale = new Vector3(1, currentFill, 1);
+        if (gm == null) return;
 
-        if (GameManager.Instance != null)
+        var recipe = gm.CurrentRecipe;
+        var step = gm.currentStepIndex;
+        var count = gm.currentRecipe[gm.currentStepIndex];
+
+        if (recipe == GameManager.RecipeType.JollofRice)
         {
-            var recipe = GameManager.Instance.CurrentRecipe;
-            var step = GameManager.Instance.currentStepIndex;
+            // Oil step: fill and progress
+            if (step == jollofOilStepIndex && streamType == StreamType.Oil)
+            {
+                currentFill += amount * fillRate * Time.deltaTime;
+                currentFill = Mathf.Clamp(currentFill, 0, maxFill);
+                fillableObject.localScale = new Vector3(1, currentFill, 1);
 
-            if (recipe == GameManager.RecipeType.JollofRice)
-            {
-                // Jollof logic
-                if (currentFill >= maxFill && step == 4 && streamType == StreamType.Oil)
-                    GameManager.Instance.CompleteCurrentStep();
-                else if (step == 6 && streamType == StreamType.Sauce)
-                {
-                    if (!isChangingColor && !isFullyRed)
-                    {
-                        isChangingColor = true;
-                        colorChangeTimer = 0f;
-                    }
-                }
-            }
-            else if (recipe == GameManager.RecipeType.Fufu)
-            {
-                // Fufu logic   
                 if (currentFill >= maxFill)
                 {
-                    Debug.Log("Fufu step complete: Pot is filled!");
+                    gm.CompleteCurrentStep();
                 }
-                if (currentFill >= maxFill && streamType == StreamType.Oil)
+            }
+            // Spices step: start timer logic for sauce
+            else if (step == jollofSpicesStepIndex && streamType == StreamType.Sauce)
+            {
+                Debug.Log("Progressing spices step: " + step + " with stream type: " + streamType);
+                if (!isStepTimerActive)
+                {
+                    stepTimerDuration = (float)count.actionCount;
+                    Debug.Log("Spices step timer duration is: " + stepTimerDuration);
+                    stepTimer = 0f;
+                    isStepTimerActive = true;
+                }
+            }
+            // Water step: start timer logic for water
+            else if (step == jollofWaterStepIndex && streamType == StreamType.Water)
+            {
+                Debug.Log("Progressing water step: " + step + " with stream type: " + streamType);
+                if (!isStepTimerActive)
+                {
+                    stepTimerDuration = (float)count.actionCount;
+                    Debug.Log("Water step timer duration is: " + stepTimerDuration);
+                    stepTimer = 0f;
+                    isStepTimerActive = true;
+                }
+            }
+            // Rice step: enable rice pile
+            else if (step == jollofRiceStepIndex)
+            {
+                if (ricePile != null && !ricePile.activeSelf)
+                {
+                    ricePile.SetActive(true);
                     GameManager.Instance.CompleteCurrentStep();
-                // Add more Fufu-specific logic here
+                }
             }
         }
+        else if (recipe == GameManager.RecipeType.Fufu)
+        {
+            // Fufu logic (unchanged)
+            currentFill += amount * fillRate * Time.deltaTime;
+            currentFill = Mathf.Clamp(currentFill, 0, maxFill);
+            fillableObject.localScale = new Vector3(1, currentFill, 1);
+
+            if (currentFill >= maxFill && streamType == StreamType.Oil)
+                GameManager.Instance.CompleteCurrentStep();
+        }
     }
+
+    //public void Fill(float amount, StreamType streamType)
+    //{
+    //    currentFill += amount * fillRate * Time.deltaTime;
+    //    currentFill = Mathf.Clamp(currentFill, 0, maxFill);
+    //    fillableObject.localScale = new Vector3(1, currentFill, 1);
+
+    //    if (GameManager.Instance != null)
+    //    {
+    //        var recipe = GameManager.Instance.CurrentRecipe;
+    //        var step = GameManager.Instance.currentStepIndex;
+
+    //        if (recipe == GameManager.RecipeType.JollofRice)
+    //        {
+    //            // Jollof logic
+    //            if (currentFill >= maxFill && step == 4 && streamType == StreamType.Oil)
+    //                GameManager.Instance.CompleteCurrentStep();
+    //            else if (step == 6 && streamType == StreamType.Sauce)
+    //            {
+    //                if (!isChangingColor && !isFullyRed)
+    //                {
+    //                    isChangingColor = true;
+    //                    colorChangeTimer = 0f;
+    //                }
+    //            }
+    //        }
+    //        else if (recipe == GameManager.RecipeType.Fufu)
+    //        {
+    //            // Fufu logic   
+    //            if (currentFill >= maxFill)
+    //            {
+    //                Debug.Log("Fufu step complete: Pot is filled!");
+    //            }
+    //            if (currentFill >= maxFill && streamType == StreamType.Oil)
+    //                GameManager.Instance.CompleteCurrentStep();
+    //            // Add more Fufu-specific logic here
+    //        }
+    //    }
+    //}
 
     // Check if both conditions are met to complete the step. This is only for Jollof Rice Step 6 so it doesn't need to
     // have any reference to the Fufu recipe.

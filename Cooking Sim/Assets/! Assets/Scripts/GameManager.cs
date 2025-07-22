@@ -129,6 +129,11 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         var step = currentRecipe[currentStepIndex];
+        if (currentStepIndex >= currentRecipe.Count)
+        {
+            Debug.LogWarning("Current step index is out of bounds of the recipe list.");
+            return;
+        }
         // Only run timer for "Seconds passed" steps
         if (currentRecipe.Count > 0 && currentStepIndex < currentRecipe.Count)
         {
