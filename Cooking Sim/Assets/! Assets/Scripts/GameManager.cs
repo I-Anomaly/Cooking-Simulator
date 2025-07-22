@@ -244,8 +244,7 @@ public class GameManager : MonoBehaviour
         var step = currentRecipe[currentStepIndex];
         if (audioSource != null && step.voiceClip != null)
         {
-            audioSource.clip = step.voiceClip;
-            audioSource.Play();
+            audioSource.PlayOneShot(step.voiceClip);
         }
 
         Debug.Log("Current Step: " + currentRecipe[currentStepIndex].description + " and it must be done " + currentRecipe[currentStepIndex].actionCount + " times.");
