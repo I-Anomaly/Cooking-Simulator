@@ -13,7 +13,7 @@ public class Stream : MonoBehaviour
 
     bool beginPour, endPour; // Flags to control pouring state
 
-    public enum StreamType { Water, Sauce }
+    public enum StreamType { Water, Sauce, Oil }
     public StreamType streamType; // Set this in the inspector for each stream object
 
     private void Awake()

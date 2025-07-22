@@ -15,17 +15,20 @@ public class GameManager : MonoBehaviour
         public int actionCount; // Number of times an action is performed for this step
         public ActionType actionType; // What type of action this is, e.g., "Instant action", "Number of actions", "Seconds passed"
         public AudioClip voiceClip; // Assign in Inspector
+        public int delayBeforeAudio; // Delay before playing the audio clip, useful for timed steps
         // You can add more fields, e.g., required ingredient, etc.
     }
     public enum ActionType
     {
         InstantAction,
         NumberOfActions,
-        SecondsPassed
+        SecondsPassed,
+        Auto
     }
 
     // Enum for recipe selection
     public enum RecipeType { JollofRice, Fufu }
+    public RecipeType CurrentRecipe { get; set; }
     public RecipeType selectedRecipe = RecipeType.Fufu;
 
     // Define recipes
@@ -67,6 +70,9 @@ public class GameManager : MonoBehaviour
     private float elapsedTime = 0f; // Timer for "Seconds passed" steps
 
     private AudioSource audioSource; // Assign in Inspector
+
+    [Header("UI")]
+    public GameObject delayPanel;
 
     [Space(10)]
     [Header("Jollof Rice Recipe Objects")]
@@ -121,10 +127,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        var step = currentRecipe[currentStepIndex];
         // Only run timer for "Seconds passed" steps
         if (currentRecipe.Count > 0 && currentStepIndex < currentRecipe.Count)
         {
-            var step = currentRecipe[currentStepIndex];
+            //var step = currentRecipe[currentStepIndex];
             if (step.actionType == ActionType.SecondsPassed && isTiming)
             {
                 elapsedTime += Time.deltaTime;
@@ -137,6 +144,18 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
+        if (step.actionType == ActionType.Auto)
+            {
+                elapsedTime += Time.deltaTime;
+                if (elapsedTime >= step.actionCount) // actionCount used as seconds
+                {
+                    isTiming = false;
+                    elapsedTime = 0f;
+                    CompleteCurrentStep();
+                    Debug.Log("Automatically moving onto the next step after 5 seconds have passed");
+                }
+            }
     }
 
     // Call this when a task is completed
@@ -145,11 +164,11 @@ public class GameManager : MonoBehaviour
         actionCount = 0; // Reset action count for the next step
         // If not at the last step, increment the index (recipe step) and show the next step
         currentStepIndex++;
-        Debug.Log("Complete the current step, reset the action count (" + actionCount + "), increment the step index, and show the next step.");
+        // Debug.Log("Complete the current step, reset the action count (" + actionCount + "), increment the step index, and show the next step.");
         if (currentStepIndex < currentRecipe.Count)
         {
             // This is a VERY lazy way to disable the jollof veggies, but it works for now
-            if (RecipeType.JollofRice == selectedRecipe && currentStepIndex == 5)
+            if (RecipeType.JollofRice == selectedRecipe && currentStepIndex == 4)
             {
                 mashedTexture.SetActive(true); // Enable the mashed texture
 
@@ -237,6 +256,17 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    IEnumerator DelayAndPlayAudio(RecipeStep step)
+    {
+        if (delayPanel) delayPanel.SetActive(true);
+        if (step.delayBeforeAudio > 0)
+            yield return new WaitForSeconds(step.delayBeforeAudio);
+        if (delayPanel) delayPanel.SetActive(false);
+        Debug.Log("Playing audio for step: " + step.description + " after a delay of " + step.delayBeforeAudio + " seconds.");
+        if (audioSource && step.voiceClip)
+            audioSource.PlayOneShot(step.voiceClip);
+    }
+
     // Display the current step in the TextMeshPro component and in the console
     void ShowCurrentStep()
     {
@@ -244,7 +274,8 @@ public class GameManager : MonoBehaviour
         var step = currentRecipe[currentStepIndex];
         if (audioSource != null && step.voiceClip != null)
         {
-            audioSource.PlayOneShot(step.voiceClip);
+            StopAllCoroutines();
+            StartCoroutine(DelayAndPlayAudio(step));
         }
 
         Debug.Log("Current Step: " + currentRecipe[currentStepIndex].description + " and it must be done " + currentRecipe[currentStepIndex].actionCount + " times.");

@@ -12,11 +12,8 @@ public class FillableController : MonoBehaviour
     public float maxFill;
 
     [Space(10)]
-    [Header("Step 5 Progression - Pour water into the pot")]
-    int currentStep = 5; // Current step index in the recipe
-
     // For step 6 logic
-    [Header("Step 6 Settings")]
+    [Header("Jollof Step 6 Settings")]
     public Renderer fillableRenderer; // Assign in inspector, the renderer of the fillable object
     public float colorChangeDuration = 2f; // Time in seconds to fully change to red
 
@@ -58,6 +55,7 @@ public class FillableController : MonoBehaviour
         }
     }
 
+    // This is so nasty of a way to go about it ... it doesn't take into account the different recipes
     public void Fill(float amount, StreamType streamType)
     {
         currentFill += amount * fillRate * Time.deltaTime;
@@ -66,26 +64,39 @@ public class FillableController : MonoBehaviour
 
         if (GameManager.Instance != null)
         {
-            // Step 5: Only progress with water stream
-            if (currentFill >= maxFill && GameManager.Instance.currentStepIndex == 5 && streamType == StreamType.Water)
+            var recipe = GameManager.Instance.CurrentRecipe;
+            var step = GameManager.Instance.currentStepIndex;
+
+            if (recipe == GameManager.RecipeType.JollofRice)
             {
-                // Debug.Log("Filled with water, progressing step 5!");
-                GameManager.Instance.CompleteCurrentStep();
-            }
-            // Step 6: Only progress color change with sauce stream
-            else if (GameManager.Instance.currentStepIndex == 6 && streamType == StreamType.Sauce)
-            {
-                // Debug.Log("Fillig with sauce, changing color to red!");
-                if (!isChangingColor && !isFullyRed)
+                // Jollof logic
+                if (currentFill >= maxFill && step == 5 && streamType == StreamType.Oil)
+                    GameManager.Instance.CompleteCurrentStep();
+                else if (step == 6 && streamType == StreamType.Sauce)
                 {
-                    isChangingColor = true;
-                    colorChangeTimer = 0f;
+                    if (!isChangingColor && !isFullyRed)
+                    {
+                        isChangingColor = true;
+                        colorChangeTimer = 0f;
+                    }
                 }
+            }
+            else if (recipe == GameManager.RecipeType.Fufu)
+            {
+                // Fufu logic   
+                if (currentFill >= maxFill)
+                {
+                    Debug.Log("Fufu step complete: Pot is filled!");
+                }
+                if (currentFill >= maxFill && streamType == StreamType.Oil)
+                    GameManager.Instance.CompleteCurrentStep();
+                // Add more Fufu-specific logic here
             }
         }
     }
 
-    // Check if both conditions are met to complete the step
+    // Check if both conditions are met to complete the step. This is only for Jollof Rice Step 6 so it doesn't need to
+    // have any reference to the Fufu recipe.
     private void CheckStepCompletion()
     {
         if (isFullyRed && GameManager.Instance != null && GameManager.Instance.currentStepIndex == 6)

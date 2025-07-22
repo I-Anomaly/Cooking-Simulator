@@ -323,7 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 664b0b2f77a77dc4b826982460e0e94f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentRecipeStep: 3
+  currentRecipeStep: 2
   stepType: 2
   utensilType: 
   requiredTag: Mortar
