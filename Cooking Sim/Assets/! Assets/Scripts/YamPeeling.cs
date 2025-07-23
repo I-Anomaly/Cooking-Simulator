@@ -16,6 +16,10 @@ public class YamPeeling : MonoBehaviour
     [Tooltip("Set this to the required recipe step for boiling.")]
     public int requiredBoilStep = 3;
 
+    [Header("Mortar and Pestle Step")]
+    [Tooltip("Set this to the required recipe step for using mortar and pestle.")]
+    public int requiredMortarAndPestleStep = 5;
+
     [Header("References")]
     [Tooltip("Assign the Renderer component of the yam.")]
     public Renderer yamRenderer;
@@ -57,24 +61,33 @@ public class YamPeeling : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (GameManager.Instance == null || GameManager.Instance.currentStepIndex != requiredBoilStep)
+        if (GameManager.Instance == null)
             return;
 
-        if (other.CompareTag("Water"))
+        if (other.CompareTag("Water") && GameManager.Instance.currentStepIndex == requiredBoilStep)
         {
             Debug.Log("Yam is in water, incrementing action.");
+            gameManager.IncrementAction();
+        } else if (other.CompareTag("Mortar") && GameManager.Instance.currentStepIndex == requiredMortarAndPestleStep)
+        {
+            Debug.Log("Yam is in mortar and pestle, incrementing action.");
             gameManager.IncrementAction();
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (GameManager.Instance == null || GameManager.Instance.currentStepIndex != requiredBoilStep)
+        if (GameManager.Instance == null)
             return;
 
-        if (other.CompareTag("Water"))
+        if (other.CompareTag("Water") && GameManager.Instance.currentStepIndex == requiredBoilStep)
         {
             Debug.Log("Yam is out of water, reducing action.");
+            gameManager.ReduceAction();
+        }
+        else if (other.CompareTag("Mortar") && GameManager.Instance.currentStepIndex == requiredMortarAndPestleStep)
+        {
+            Debug.Log("Yam is out of mortar and pestle, reducing action.");
             gameManager.ReduceAction();
         }
     }

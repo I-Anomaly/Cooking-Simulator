@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 8669080121376090292}
   m_Layer: 0
   m_Name: Pestle
-  m_TagString: Untagged
+  m_TagString: Pestle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -316,7 +316,6 @@ MonoBehaviour:
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
   respawnSound: {fileID: 0}
-  respawnDistanceThreshold: 15
   respawnDelay: 1
 --- !u!1001 &7453217048045504764
 PrefabInstance:

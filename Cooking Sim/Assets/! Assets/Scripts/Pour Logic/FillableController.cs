@@ -138,6 +138,9 @@ public class FillableController : MonoBehaviour
                     ricePile.SetActive(true);
                     gm.CompleteCurrentStep();
                 }
+            } else
+            {
+                Debug.Log("This is not a Jollof Rice step, so no action taken.");
             }
         }
         else if (recipe == GameManager.RecipeType.Fufu)
@@ -153,6 +156,22 @@ public class FillableController : MonoBehaviour
                 if (currentFill >= maxFill && streamType == StreamType.Water)
                     gm.CompleteCurrentStep();
 
+            } else if (step == 7)
+            {
+                stepTimerDuration = (float)count.actionCount;
+                Debug.Log("Watering number 1 duration is: " + stepTimerDuration);
+                stepTimer = 0f;
+                isStepTimerActive = true;
+            } else if (step == 9)
+            {
+                stepTimerDuration = (float)count.actionCount;
+                Debug.Log("Watering number 2 duration is: " + stepTimerDuration);
+                stepTimer = 0f;
+                isStepTimerActive = true;
+            }
+            else
+            {
+                Debug.Log("This is not the Fufu water step, so no action taken.");
             }
         }
         else

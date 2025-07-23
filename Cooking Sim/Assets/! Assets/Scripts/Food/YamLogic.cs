@@ -18,6 +18,9 @@ public class YamLogic : MonoBehaviour
 
     int mashCount = 0;
 
+    public GameObject[] yamPieces; // Array to hold yam pieces for the final step
+    public GameObject fufuBall;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,7 +47,11 @@ public class YamLogic : MonoBehaviour
                 Debug.Log("Yam is fully mashed, incrementing action.");
                 UpdateTexture();
                 gm.CompleteCurrentStep();
-
+                if (gm.currentStepIndex == lastMashStep + 1)
+                {
+                    fufuBall.SetActive(true); // Show the fufu ball after the last step
+                    this.gameObject.SetActive(false); // Hide the yam after the last step
+                }
             }
         }
     }
@@ -59,6 +66,18 @@ public class YamLogic : MonoBehaviour
         {
             meshRenderer.enabled = true;
             meshRenderer.material.mainTexture = mashTextures[0];
+
+            // Destroy yam pieces
+            if (yamPieces != null)
+            {
+                foreach (var piece in yamPieces)
+                {
+                    if (piece != null)
+                    {
+                        Destroy(piece);
+                    }
+                }
+            }
         }
         else if (gm.currentStepIndex == secondMashStep && mashTextures.Length > 1)
         {

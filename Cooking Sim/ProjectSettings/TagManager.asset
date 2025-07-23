@@ -12,6 +12,7 @@ TagManager:
   - Yam
   - Knife
   - Iru
+  - XRController
   layers:
   - Default
   - TransparentFX
