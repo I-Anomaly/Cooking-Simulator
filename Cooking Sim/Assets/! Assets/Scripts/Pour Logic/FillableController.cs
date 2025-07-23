@@ -81,7 +81,7 @@ public class FillableController : MonoBehaviour
         }
     }
 
-    // This is so nasty of a way to go about it ...
+    // This is so nasty of a way to go about it ... ugh, if statements control what actions happen depending on the recipe step and liquid
     public void Fill(float amount, StreamType streamType)
     {
         if (gm == null) return;
@@ -145,7 +145,7 @@ public class FillableController : MonoBehaviour
             Debug.Log("Fufu water step: " + step + " with stream type: " + streamType);
             if (step == fufuWaterStepIndex)
             {
-                // Fufu logic (unchanged)
+                // Fufu logic; when filled, complete step
                 currentFill += amount * fillRate * Time.deltaTime;
                 currentFill = Mathf.Clamp(currentFill, 0, maxFill);
                 fillableObject.localScale = new Vector3(1, currentFill, 1);
