@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
     };
 
     public List<RecipeStep> currentRecipe = new List<RecipeStep>();
-    public TextMeshPro stepText; // Reference to a TextMeshPro world component to display the current step
+    public TextMeshProUGUI stepText; // Reference to a TextMeshPro world component to display the current step
     public int currentStepIndex = 0;
     public int actionCount = 0;
 
@@ -70,6 +70,9 @@ public class GameManager : MonoBehaviour
     private float elapsedTime = 0f; // Timer for "Seconds passed" steps
 
     private AudioSource audioSource; // Assign in Inspector
+
+    [Space(10)]
+    public bool recipeComplete = false; // This is used to determine if the recipe is complete or not
 
     [Header("UI")]
     public GameObject delayPanel;
@@ -124,10 +127,18 @@ public class GameManager : MonoBehaviour
         currentStepIndex = 0;
         actionCount = 0;
         ShowCurrentStep();
+
+        recipeComplete = false; // Reset recipe complete status
     }
 
     private void Update()
     {
+        if (recipeComplete)
+            {
+            // Debug.Log("Recipe is complete, no further steps can be processed.");
+            return; // If the recipe is complete, do not process any further steps
+        }
+
         var step = currentRecipe[currentStepIndex];
         if (currentStepIndex >= currentRecipe.Count)
         {
@@ -199,6 +210,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log("Recipe complete!");
+            recipeComplete = true; // Set recipe complete status to true
             // Handle recipe completion
             if (stepText != null)
             {

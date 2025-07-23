@@ -13,14 +13,22 @@ public class StirManager : MonoBehaviour
         if (!other.CompareTag("Water"))
             return;
 
-        if (GameManager.Instance != null && GameManager.Instance.currentStepIndex == 8)
+        if (GameManager.Instance.currentStepIndex != 8 || GameManager.Instance.recipeComplete == true)
+            return;
+
+        if (!isInWater)
         {
-            if (!isInWater)
-            {
-                Debug.Log("Stirring in water");
-                isInWater = true;
-                GameManager.Instance.StartTimedAction();
-            }
+            Debug.Log("Stirring in water");
+            isInWater = true;
+            GameManager.Instance.StartTimedAction();
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (GameManager.Instance.recipeComplete == true)
+        {
+            isInWater = false;
         }
     }
 
@@ -29,11 +37,11 @@ public class StirManager : MonoBehaviour
         if (!other.CompareTag("Water"))
             return;
 
-        if (GameManager.Instance != null && GameManager.Instance.currentStepIndex == 8)
-        {
-            Debug.Log("Stopped stirring in water");
-            isInWater = false;
-            GameManager.Instance.StopTimedAction();
-        }
+        if (GameManager.Instance.currentStepIndex != 8 || GameManager.Instance.recipeComplete == true)
+            return;
+
+        Debug.Log("Stopped stirring in water");
+        isInWater = false;
+        GameManager.Instance.StopTimedAction();
     }
 }

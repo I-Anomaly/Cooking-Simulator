@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 7185940367196018589}
   m_Layer: 0
   m_Name: Yam
-  m_TagString: Untagged
+  m_TagString: Yam
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -372,6 +372,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: be10f3f2bfc4d66409f04cdf815402e2, type: 3}
   - {fileID: 2800000, guid: 5dfb3ac8c4c2539409e729c2e02ca4fe, type: 3}
   requiredRecipeStep: 1
+  requiredBoilStep: 3
   yamRenderer: {fileID: 5566410533974745199}
 --- !u!114 &7185940367196018589
 MonoBehaviour:
