@@ -1,0 +1,6 @@
+newmtl Ground
+bump Ground_Ground_Normal.png
+map_Kd Ground_Ground_BaseMap.png
+Kd 1 1 1
+d 1
+

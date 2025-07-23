@@ -204,52 +204,52 @@ MonoBehaviour:
       type: 3}
     settings:
       m_Strength: 50
-      m_RotationRangeMin: {x: 0, y: 0, z: 0}
-      m_RotationRangeMax: {x: 0, y: 0, z: 0}
-      m_ScaleRangeMin: {x: 1, y: 1, z: 1}
-      m_ScaleRangeMax: {x: 1, y: 1, z: 1}
+      m_RotationRangeMin: {x: -85, y: 0, z: 0}
+      m_RotationRangeMax: {x: -93, y: 360, z: 0}
+      m_ScaleRangeMin: {x: 0.89743567, y: 0.8717949, z: 0.8504272}
+      m_ScaleRangeMax: {x: 1.3675214, y: 1.2991456, z: 1.2991456}
       m_UniformScale: {x: 1, y: 1}
       m_UniformBool: 0
       m_XRotationBool: 1
       m_YRotationBool: 1
       m_ZRotationBool: 0
-      m_XScaleBool: 0
+      m_XScaleBool: 1
       m_YScaleBool: 1
-      m_ZScaleBool: 0
+      m_ZScaleBool: 1
     name: Bush3
   - gameObject: {fileID: 919132149155446097, guid: d09cc214547acd64c8f004eb9f77c706,
       type: 3}
     settings:
       m_Strength: 50
-      m_RotationRangeMin: {x: 0, y: 0, z: 0}
-      m_RotationRangeMax: {x: 0, y: 0, z: 0}
-      m_ScaleRangeMin: {x: 1, y: 1, z: 1}
-      m_ScaleRangeMax: {x: 1, y: 1, z: 1}
+      m_RotationRangeMin: {x: -87, y: 0, z: 0}
+      m_RotationRangeMax: {x: -91, y: 360, z: 0}
+      m_ScaleRangeMin: {x: 0.89743567, y: 0.8717949, z: 0.82906}
+      m_ScaleRangeMax: {x: 1.2606835, y: 1.2136753, z: 1.1923076}
       m_UniformScale: {x: 1, y: 1}
       m_UniformBool: 0
       m_XRotationBool: 1
       m_YRotationBool: 1
       m_ZRotationBool: 0
-      m_XScaleBool: 0
+      m_XScaleBool: 1
       m_YScaleBool: 1
-      m_ZScaleBool: 0
+      m_ZScaleBool: 1
     name: Bush2
   - gameObject: {fileID: 919132149155446097, guid: d8dbd4ae586003340b44b3e0271a3fb6,
       type: 3}
     settings:
       m_Strength: 50
-      m_RotationRangeMin: {x: 0, y: 0, z: 0}
-      m_RotationRangeMax: {x: 0, y: 0, z: 0}
-      m_ScaleRangeMin: {x: 1, y: 1, z: 1}
-      m_ScaleRangeMax: {x: 1, y: 1, z: 1}
+      m_RotationRangeMin: {x: -86, y: 0, z: 0}
+      m_RotationRangeMax: {x: -92, y: 360, z: 0}
+      m_ScaleRangeMin: {x: 0.76923054, y: 0.55555636, z: 0.8504272}
+      m_ScaleRangeMax: {x: 1.0897435, y: 1.0897435, z: 1.0641025}
       m_UniformScale: {x: 1, y: 1}
       m_UniformBool: 0
       m_XRotationBool: 1
       m_YRotationBool: 1
       m_ZRotationBool: 0
-      m_XScaleBool: 0
+      m_XScaleBool: 1
       m_YScaleBool: 1
-      m_ZScaleBool: 0
+      m_ZScaleBool: 1
     name: Bush1
   - gameObject: {fileID: 919132149155446097, guid: f3895c69f3b5a604eaa1650bdf1f4260,
       type: 3}
