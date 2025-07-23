@@ -8,9 +8,13 @@ public class YamPeeling : MonoBehaviour
     [Tooltip("Assign 4 textures representing each peeling stage.")]
     public Texture[] peelingTextures = new Texture[4];
 
-    [Header("Recipe Step")]
+    [Header("Peel Step")]
     [Tooltip("Set this to the required recipe step for peeling.")]
-    public int requiredRecipeStep = 2;
+    public int requiredRecipeStep = 1;
+
+    [Header("Boil Step")]
+    [Tooltip("Set this to the required recipe step for boiling.")]
+    public int requiredBoilStep = 3;
 
     [Header("References")]
     [Tooltip("Assign the Renderer component of the yam.")]
@@ -48,6 +52,30 @@ public class YamPeeling : MonoBehaviour
                 // Progress the recipe
                 gameManager.IncrementAction();
             }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (GameManager.Instance == null || GameManager.Instance.currentStepIndex != requiredBoilStep)
+            return;
+
+        if (other.CompareTag("Water"))
+        {
+            Debug.Log("Yam is in water, incrementing action.");
+            gameManager.IncrementAction();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (GameManager.Instance == null || GameManager.Instance.currentStepIndex != requiredBoilStep)
+            return;
+
+        if (other.CompareTag("Water"))
+        {
+            Debug.Log("Yam is out of water, reducing action.");
+            gameManager.ReduceAction();
         }
     }
 

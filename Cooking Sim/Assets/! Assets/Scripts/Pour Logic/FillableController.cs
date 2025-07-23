@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using static Stream;
 
@@ -27,6 +25,9 @@ public class FillableController : MonoBehaviour
     [Header("Jollof Rice Settings")]
     public GameObject ricePile;
     public int jollofRiceStepIndex = 6; // The step index for Jollof Rice Step 5
+
+    [Header("Fufu Settings")]
+    public int fufuWaterStepIndex = 1; // The step index for Fufu Step 1
 
     private bool isChangingColor = false;
     private float colorChangeTimer = 0f;
@@ -80,17 +81,19 @@ public class FillableController : MonoBehaviour
         }
     }
 
-    // This is so nasty of a way to go about it ... it doesn't take into account the different recipes
+    // This is so nasty of a way to go about it ...
     public void Fill(float amount, StreamType streamType)
     {
         if (gm == null) return;
 
-        var recipe = gm.CurrentRecipe;
+        var recipe = gm.selectedRecipe;
         var step = gm.currentStepIndex;
         var count = gm.currentRecipe[gm.currentStepIndex];
 
         if (recipe == GameManager.RecipeType.JollofRice)
         {
+            Debug.Log("Jollof Rice step: " + step + " with stream type: " + streamType);
+
             // Oil step: fill and progress
             if (step == jollofOilStepIndex && streamType == StreamType.Oil)
             {
@@ -133,19 +136,28 @@ public class FillableController : MonoBehaviour
                 if (ricePile != null && !ricePile.activeSelf)
                 {
                     ricePile.SetActive(true);
-                    GameManager.Instance.CompleteCurrentStep();
+                    gm.CompleteCurrentStep();
                 }
             }
         }
         else if (recipe == GameManager.RecipeType.Fufu)
         {
-            // Fufu logic (unchanged)
-            currentFill += amount * fillRate * Time.deltaTime;
-            currentFill = Mathf.Clamp(currentFill, 0, maxFill);
-            fillableObject.localScale = new Vector3(1, currentFill, 1);
+            Debug.Log("Fufu water step: " + step + " with stream type: " + streamType);
+            if (step == fufuWaterStepIndex)
+            {
+                // Fufu logic (unchanged)
+                currentFill += amount * fillRate * Time.deltaTime;
+                currentFill = Mathf.Clamp(currentFill, 0, maxFill);
+                fillableObject.localScale = new Vector3(1, currentFill, 1);
 
-            if (currentFill >= maxFill && streamType == StreamType.Oil)
-                GameManager.Instance.CompleteCurrentStep();
+                if (currentFill >= maxFill && streamType == StreamType.Water)
+                    gm.CompleteCurrentStep();
+
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Unknown recipe type or step logic not implemented for: " + recipe);
         }
     }
 
