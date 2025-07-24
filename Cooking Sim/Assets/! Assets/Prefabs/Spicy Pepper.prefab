@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3335132024322821806}
   - component: {fileID: 7184724731671052076}
   - component: {fileID: 2896083052096626791}
+  - component: {fileID: 3063990680450064654}
   m_Layer: 0
   m_Name: Spicy Pepper
   m_TagString: Untagged
@@ -214,6 +215,22 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
+--- !u!114 &3063990680450064654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2361284284714579918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
+    type: 3}
+  respawnSound: {fileID: 0}
+  respawnDelay: 1
 --- !u!1001 &5500549142397427551
 PrefabInstance:
   m_ObjectHideFlags: 0

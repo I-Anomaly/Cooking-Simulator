@@ -75,6 +75,7 @@ public class FillableController : MonoBehaviour
             if (stepTimer >= stepTimerDuration)
             {
                 isStepTimerActive = false;
+                stepTimer = 0;
                 gm.CompleteCurrentStep();
             }
             Debug.Log($"Step timer: {stepTimer}/{stepTimerDuration} seconds");
@@ -160,13 +161,11 @@ public class FillableController : MonoBehaviour
             {
                 stepTimerDuration = (float)count.actionCount;
                 Debug.Log("Watering number 1 duration is: " + stepTimerDuration);
-                stepTimer = 0f;
                 isStepTimerActive = true;
             } else if (step == 9)
             {
                 stepTimerDuration = (float)count.actionCount;
                 Debug.Log("Watering number 2 duration is: " + stepTimerDuration);
-                stepTimer = 0f;
                 isStepTimerActive = true;
             }
             else

@@ -43,4 +43,22 @@ public class ChangeScene : MonoBehaviour
         while (Fader.isFading) yield return null; // wait until fade is complete
         Application.Quit();
     }
+
+    private void OnGUI()
+    {
+        if (GUI.Button(new Rect(10, 10, 100, 20), "Jollof Scene"))
+        {
+            ChangeToSpecificScene("MechanicsJollofFinal");
+        }
+
+        if (GUI.Button(new Rect(10, 30, 100, 20), "Fufu Scene"))
+        {
+            ChangeToSpecificScene("MechanicsFufuFinal");
+        }
+
+        if (GUI.Button(new Rect(10, 50, 100, 20), "Quit"))
+        {
+            QuitGame();
+        }
+    }
 }

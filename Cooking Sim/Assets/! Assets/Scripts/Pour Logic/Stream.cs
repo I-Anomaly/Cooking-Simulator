@@ -83,7 +83,7 @@ public class Stream : MonoBehaviour
         Ray ray = new Ray(transform.position, Vector3.down); // Cast a ray downwards from the stream's position
         if (Physics.Raycast(ray, out hit, 10f))
         {
-            Debug.Log($"Hit: {hit.collider.gameObject.name} at {hit.point}"); // Log the hit information
+            // Debug.Log($"Hit: {hit.collider.gameObject.name} at {hit.point}"); // Log the hit information
             FillableController fillable = hit.collider.gameObject.GetComponent<FillableController>(); // Check if the hit object has a FillableController component, though you could use tags instead later
             if (fillable != null)
             {

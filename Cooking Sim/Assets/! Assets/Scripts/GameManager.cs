@@ -111,6 +111,9 @@ public class GameManager : MonoBehaviour
     {
         Fader.FadeIn();
 
+        // Always clear the current recipe list first
+        currentRecipe.Clear();
+
         // Choose recipe based on selectedRecipe
         switch (selectedRecipe)
         {
@@ -309,24 +312,24 @@ public class GameManager : MonoBehaviour
 
     private void OnGUI()
     {
-        if (GUI.Button(new Rect(10, 10, 100, 20), "Complete Step"))
-        {
-            CompleteCurrentStep();
-        }
+        //if (GUI.Button(new Rect(10, 10, 100, 20), "Complete Step"))
+        //{
+        //    CompleteCurrentStep();
+        //}
 
-        if (GUI.Button(new Rect(10, 30, 100, 20), "Start Timer"))
-        {
-            StartTimedAction();
-        }
+        //if (GUI.Button(new Rect(10, 30, 100, 20), "Start Timer"))
+        //{
+        //    StartTimedAction();
+        //}
 
-        if (GUI.Button(new Rect(10, 50, 100, 20), "Stop Timer"))
-        {
-            StopTimedAction();
-        }
+        //if (GUI.Button(new Rect(10, 50, 100, 20), "Stop Timer"))
+        //{
+        //    StopTimedAction();
+        //}
 
-        if (GUI.Button(new Rect(10, 70, 100, 20), "Add Action"))
-        {
-            IncrementAction();
-        }
+        //if (GUI.Button(new Rect(10, 70, 100, 20), "Add Action"))
+        //{
+        //    IncrementAction();
+        //}
     }
 }

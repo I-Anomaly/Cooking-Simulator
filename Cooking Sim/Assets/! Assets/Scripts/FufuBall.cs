@@ -6,6 +6,12 @@ public class FufuBall : MonoBehaviour
     int actionCount = 0;
     int hitCount = 0;
 
+    [Header("Ball Mesh Scaling")]
+    public Transform ballMesh; // Assign your child mesh in the inspector
+    public Vector3[] ballScales; // Set desired scales for each hit in the inspector
+    public GameObject finishedFufuBallPrefab;
+    public GameObject particleEffect;
+
     void Start()
     {
         gm = GameManager.Instance;
@@ -16,42 +22,50 @@ public class FufuBall : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("XRController"))
-        {
-            hitCount++;
-            Debug.Log("Fufu ball hit count: " + hitCount);
-            if (hitCount >= actionCount && gm != null)
-            {
-                gm.CompleteCurrentStep();
-                hitCount = 0; // Reset if you want to allow for repeated steps
-            }
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("XRController"))
-        {
-            hitCount++;
-            Debug.Log("Fufu ball hit count: " + hitCount);
-            if (hitCount >= actionCount && gm != null)
-            {
-                gm.CompleteCurrentStep();
-                hitCount = 0; // Reset if you want to allow for repeated steps
-            }
-        }
-    }
-
     public void FufuBalled()
     {
         hitCount++;
         Debug.Log("Fufu ball hit count: " + hitCount);
+
+        // Change scale if within range
+        if (ballScales != null && hitCount - 1 < ballScales.Length)
+        {
+            ballMesh.localScale = ballScales[hitCount - 1];
+        }
         if (hitCount >= actionCount && gm != null)
         {
             gm.CompleteCurrentStep();
-            hitCount = 0; // Reset if you want to allow for repeated steps
+            EnableAllFufuBalls();
+            hitCount = 0;
+        }
+    }
+
+    public void EnableAllFufuBalls()
+    {
+        if (finishedFufuBallPrefab == null) return;
+
+        Vector3 basePosition = transform.position;
+        float offset = 0.2f; // Adjust as needed to spread out the balls
+
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3 spawnPos = basePosition + new Vector3(i * offset, 0, 0);
+            Instantiate(finishedFufuBallPrefab, spawnPos, Quaternion.identity);
+        }
+
+        if (particleEffect != null)
+        {
+            Instantiate(particleEffect, basePosition, Quaternion.identity);
+        }
+
+        Destroy(gameObject); // Destroy the original FufuBall object
+    }
+
+    private void OnGUI()
+    {
+        if (GUI.Button(new Rect(10, 200, 100, 20), "Fufu Squeeze"))
+        {
+            FufuBalled();
         }
     }
 }

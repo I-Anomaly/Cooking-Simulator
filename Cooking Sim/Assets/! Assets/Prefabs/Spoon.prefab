@@ -42,6 +42,8 @@ GameObject:
   - component: {fileID: 419660715398334880}
   - component: {fileID: 1034644880505370619}
   - component: {fileID: 7605221668049708104}
+  - component: {fileID: 3567100515599887515}
+  - component: {fileID: 7185237140277039798}
   m_Layer: 0
   m_Name: Spoon
   m_TagString: Untagged
@@ -204,7 +206,7 @@ MonoBehaviour:
   m_SnapToColliderVolume: 1
   m_ReinitializeDynamicAttachEverySingleGrab: 1
   m_AttachEaseInTime: 0.15
-  m_MovementType: 2
+  m_MovementType: 0
   m_VelocityDamping: 1
   m_VelocityScale: 1
   m_AngularVelocityDamping: 1
@@ -246,6 +248,34 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
+--- !u!114 &3567100515599887515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7026325411486031391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b0610e1d4ce90645b640378e7221cf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7185237140277039798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7026325411486031391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
+    type: 3}
+  respawnSound: {fileID: 0}
+  respawnDelay: 1
 --- !u!1001 &2188933622225688542
 PrefabInstance:
   m_ObjectHideFlags: 0
