@@ -12,11 +12,12 @@ public class GameManager : MonoBehaviour
     {
         public string description; // Description of the step, e.g., "Slice tomatoes", "Add water to pot"
         public string utensil; // The utensil required for this step, e.g., "Knife", "Mortar", "Pestle", "Pot", this could maybe be removed
+        [Tooltip("The 'time' or 'action count' required for this step, e.g., 3 slices, 5 seconds, etc.")]
         public int actionCount; // Number of times an action is performed for this step
         public ActionType actionType; // What type of action this is, e.g., "Instant action", "Number of actions", "Seconds passed"
         public AudioClip voiceClip; // Assign in Inspector
         public int delayBeforeAudio; // Delay before playing the audio clip, useful for timed steps
-        // You can add more fields, e.g., required ingredient, etc.
+        public string stepID; // Unique identifier for the step, rather than looking at indexes, we can use this to identify steps
     }
     public enum ActionType
     {
@@ -312,10 +313,10 @@ public class GameManager : MonoBehaviour
 
     private void OnGUI()
     {
-        //if (GUI.Button(new Rect(10, 10, 100, 20), "Complete Step"))
-        //{
-        //    CompleteCurrentStep();
-        //}
+        if (GUI.Button(new Rect(10, 80, 100, 20), "Complete Step"))
+        {
+            CompleteCurrentStep();
+        }
 
         //if (GUI.Button(new Rect(10, 30, 100, 20), "Start Timer"))
         //{

@@ -7,7 +7,7 @@ public class ProgressionManager : MonoBehaviour
     public int currentRecipeStep; // Current step in the recipe progression
     public enum StepType { Instant, Seconds, Actions }
     public StepType stepType; // Set this in the Inspector to match the item's action type
-    public string utensilType; // Set this in the Inspector to match the item's utensil
+    public string stepID; // Set this in the Inspector to match the item's utensil
     public string requiredTag; // Set this in the Inspector to match the required tag for the item
 
     [Space(10)]
@@ -53,20 +53,14 @@ public class ProgressionManager : MonoBehaviour
             Debug.LogWarning("GameManager is not initialized or current recipe is empty.");
             return;
         }
-         
-        // Check if the current step index matches the step this item is responsible for
-        int currentStepIndex = gm.currentStepIndex;
-        if (currentRecipeStep != currentStepIndex)
+
+        // Check if the current step ID string matches the step ID of the current step in the recipe
+        var step = gm.currentRecipe[gm.currentStepIndex];
+        if (!string.Equals(stepID, step.stepID, System.StringComparison.Ordinal))
         {
-            Debug.Log("This is not the correct step for this item. Current step: " + currentStepIndex + ", expected step: " + currentRecipeStep);
+            Debug.Log("This is not the correct step for this item. Current step ID: " + step.stepID + ", expected step ID: " + stepID);
             return;
         }
-
-        var step = gm.currentRecipe[currentStepIndex];
-
-        // Optionally check utensil type
-        //if (!string.IsNullOrEmpty(utensilType) && step.utensil != utensilType)
-        //    return;
 
         Debug.Log("Proceeding with step: " + step.description);
 

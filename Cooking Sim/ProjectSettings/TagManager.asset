@@ -13,11 +13,12 @@ TagManager:
   - Knife
   - Iru
   - XRController
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Outlined Objects
   - Water
   - UI
   - Left Hand Physics

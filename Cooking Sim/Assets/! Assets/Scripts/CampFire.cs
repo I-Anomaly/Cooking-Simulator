@@ -30,13 +30,6 @@ public class CampFire : MonoBehaviour
             }
 
             fireGameObject.SetActive(true); // Ensure the object is enabled
-
-            //// Play all particle systems on the fireGameObject and its children
-            //var particleSystems = fireGameObject.GetComponentsInChildren<ParticleSystem>(true);
-            //foreach (var ps in particleSystems)
-            //{
-            //    ps.Play();
-            //}
         }
         gm.IncrementAction();
     }
