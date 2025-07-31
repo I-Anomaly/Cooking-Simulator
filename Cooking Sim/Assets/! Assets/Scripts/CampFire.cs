@@ -10,11 +10,19 @@ public class CampFire : MonoBehaviour
 
     public GameObject fireGameObject; // GameObject to activate when the action count is reached
 
+    public bool isFireOn = false; // Track if the fire is already on
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         // Get the game manager instance
         gm = GameManager.Instance;
+        
     }
 
     public void IncrementProgress()
@@ -28,7 +36,7 @@ public class CampFire : MonoBehaviour
                 Debug.LogError("fireGameObject is not assigned!");
                 return;
             }
-
+            isFireOn = true;
             fireGameObject.SetActive(true); // Ensure the object is enabled
         }
         gm.IncrementAction();

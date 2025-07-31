@@ -26,13 +26,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2571820880694602751}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.66151863, y: 0.20036766, z: 0.19010991, w: 0.69721174}
-  m_LocalPosition: {x: 0.208, y: 0.057, z: -0.083}
+  m_LocalRotation: {x: -0.5853491, y: 0.38163596, z: 0.36209813, w: 0.6169323}
+  m_LocalPosition: {x: 0.113, y: 0.057, z: -0.392}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1927807430267204810}
-  m_LocalEulerAnglesHint: {x: -86.991, y: 32.068, z: 0}
+  m_LocalEulerAnglesHint: {x: -86.99, y: 63.483, z: -0.001}
 --- !u!114 &6963222361086279200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_SelectEntered:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1927950771804526833}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CampFire, Assembly-CSharp
         m_MethodName: IncrementProgress
         m_Mode: 1
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_SelectExited:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1927950771804526833}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CampFire, Assembly-CSharp
         m_MethodName: DecrementProgress
         m_Mode: 1
@@ -136,7 +136,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.3
+  m_Radius: 0.2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2809405865357616439
 GameObject:
@@ -147,7 +147,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1927807430267204810}
-  - component: {fileID: 1927950771804526833}
   m_Layer: 0
   m_Name: Campfire
   m_TagString: Untagged
@@ -176,19 +175,6 @@ Transform:
   - {fileID: 328781544940518777}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1927950771804526833
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2809405865357616439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a156cc6a90b68ad4a8568c47f4e01464, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fireGameObject: {fileID: 5941822523658602770}
 --- !u!1 &2974960188623971822
 GameObject:
   m_ObjectHideFlags: 0
@@ -14961,7 +14947,7 @@ MonoBehaviour:
   m_SelectEntered:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1927950771804526833}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CampFire, Assembly-CSharp
         m_MethodName: IncrementProgress
         m_Mode: 1
@@ -14976,7 +14962,7 @@ MonoBehaviour:
   m_SelectExited:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1927950771804526833}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CampFire, Assembly-CSharp
         m_MethodName: DecrementProgress
         m_Mode: 1
@@ -15032,7 +15018,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.3
+  m_Radius: 0.2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &9111441897076749002
 GameObject:
@@ -15060,8 +15046,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9111441897076749002}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.66151863, y: 0.20036766, z: 0.19010991, w: 0.69721174}
-  m_LocalPosition: {x: -0.214, y: 0.057, z: 0.179}
+  m_LocalRotation: {x: -0.6788826, y: -0.11955532, z: -0.11343503, w: 0.71551204}
+  m_LocalPosition: {x: -0.394, y: 0.057, z: -0.127}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15099,7 +15085,7 @@ MonoBehaviour:
   m_SelectEntered:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1927950771804526833}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CampFire, Assembly-CSharp
         m_MethodName: IncrementProgress
         m_Mode: 1
@@ -15114,7 +15100,7 @@ MonoBehaviour:
   m_SelectExited:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1927950771804526833}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CampFire, Assembly-CSharp
         m_MethodName: DecrementProgress
         m_Mode: 1
@@ -15170,7 +15156,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.3
+  m_Radius: 0.2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &153975539292557877
 PrefabInstance:

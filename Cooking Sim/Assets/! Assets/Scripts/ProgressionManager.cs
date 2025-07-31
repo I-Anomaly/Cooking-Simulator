@@ -4,7 +4,6 @@ using static GameManager;
 
 public class ProgressionManager : MonoBehaviour
 {
-    public int currentRecipeStep; // Current step in the recipe progression
     public enum StepType { Instant, Seconds, Actions }
     public StepType stepType; // Set this in the Inspector to match the item's action type
     public string stepID; // Set this in the Inspector to match the item's utensil
@@ -120,22 +119,20 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     public void TryProgressStep()
     {
-        DebugStep();
-
         // If the game manager is not initialized or has no current recipe, exit
         if (gm == null || gm.currentRecipe.Count == 0)
             return;
 
         // Check if the current step index matches the step this item is responsible for
         int currentStepIndex = gm.currentStepIndex;
-        if (currentRecipeStep != currentStepIndex)
+
+        // Check if the current step ID string matches the step ID of the current step in the recipe
+        var step = gm.currentRecipe[gm.currentStepIndex];
+        if (!string.Equals(stepID, step.stepID, System.StringComparison.Ordinal))
+        {
+            Debug.Log("This is not the correct step for this item. Current step ID: " + step.stepID + ", expected step ID: " + stepID);
             return;
-
-        // Get the current step from the game manager's recipe
-        var step = gm.currentRecipe[currentStepIndex];
-
-        //if (step.utensil != utensilType)
-        //    return;
+        }
 
         // Check if the action type matches the step type, then do the action on the game manager
         switch (stepType)
@@ -189,15 +186,11 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     public void CompleteStep()
     {
-        // Check if the current step index matches the current recipe step
-        int currentStepIndex = gm.currentStepIndex;
-        if (currentRecipeStep != currentStepIndex)
+        // Check if the current step ID string matches the step ID of the current step in the recipe
+        var step = gm.currentRecipe[gm.currentStepIndex];
+        if (!string.Equals(stepID, step.stepID, System.StringComparison.Ordinal))
         {
-            Debug.LogWarning("This is not the correct step to complete. Current step: " + currentStepIndex + ", expected step: " + currentRecipeStep);
-            if (gm != null)
-            {
-                Debug.Log("Current Step: " + gm.currentStepIndex + " and this is attached to " + gameObject.name);
-            }
+            Debug.Log("This is not the correct step for this item. Current step ID: " + step.stepID + ", expected step ID: " + stepID);
             return;
         }
 
@@ -210,28 +203,8 @@ public class ProgressionManager : MonoBehaviour
         // If disableOnComplete is true, disable this GameObject (for some reason it's not working in the editor)
         if (disableOnComplete)
         {
-            Debug.Log("Step completed: " + currentRecipeStep + ". Disabling object: " + gameObject.name);
+            Debug.Log("Disabling object: " + gameObject.name);
             gameObject.SetActive(false);
         }
-    }
-
-    /// <summary>
-    /// Just for debugging purposes, this will log the current step and the GameObject it's attached to, and will check if it's the correct step.
-    /// </summary>
-    public void DebugStep()
-    {
-        if (gm == null || gm.currentRecipe.Count == 0) {
-            Debug.LogWarning("GameManager is not initialized or current recipe is empty.");
-            return;
-        }
-
-        int currentStepIndex = gm.currentStepIndex;
-        if (currentRecipeStep != currentStepIndex)
-        {
-            Debug.Log("This is not the correct step to debug.");
-            return;
-        }
-
-        Debug.Log("Current Step: " + currentRecipeStep + " and this is attached to " + gameObject.name);
     }
 }

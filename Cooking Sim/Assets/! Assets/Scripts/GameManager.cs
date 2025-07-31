@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
         public AudioClip voiceClip; // Assign in Inspector
         public int delayBeforeAudio; // Delay before playing the audio clip, useful for timed steps
         public string stepID; // Unique identifier for the step, rather than looking at indexes, we can use this to identify steps
+        public GameObject[] highlightables; // Optional array of GameObjects to highlight during this step
     }
     public enum ActionType
     {
@@ -74,6 +75,7 @@ public class GameManager : MonoBehaviour
 
     [Space(10)]
     public bool recipeComplete = false; // This is used to determine if the recipe is complete or not
+    CampFire campFire; // Reference to the CampFire script, if needed
 
     [Header("UI")]
     public GameObject delayPanel;
@@ -89,6 +91,13 @@ public class GameManager : MonoBehaviour
     [Header("Recipe Complete!")]
     public GameObject particleEffect;
     public AudioClip celebration;
+
+    [Space(10)]
+    [Header("Highlighting")]
+    public string highlightLayerName = "Outlined Objects"; // Set this to your highlight layer name in Unity
+    public string defaultLayerName = "Default";     // Set this to your default layer name in Unity
+
+    private GameObject[] previousHighlightables = null;
 
     static GameManager instance;
     public static GameManager Instance
@@ -133,6 +142,19 @@ public class GameManager : MonoBehaviour
         ShowCurrentStep();
 
         recipeComplete = false; // Reset recipe complete status
+
+        // Grab campfire reference if it exists
+        campFire = FindObjectOfType<CampFire>();
+
+        if (campFire.isFireOn)
+        {
+            Debug.Log("Campfire is already on, no need to turn it on again.");
+            CompleteCurrentStep(); // Automatically complete the step if the campfire is already on
+        }
+        else
+        {
+            Debug.Log("Campfire is off, it will be turned on when the action count is reached.");
+        }
     }
 
     private void Update()
@@ -264,6 +286,54 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Highlight Logic
+    // Call this at the start of each step to update highlightables
+    void UpdateHighlightables()
+    {
+        // Disable previous highlightables
+        if (previousHighlightables != null)
+        {
+            SetObjectsLayer(previousHighlightables, defaultLayerName);
+        }
+
+        // Enable current step's highlightables
+        var step = currentRecipe[currentStepIndex];
+        if (step.highlightables != null && step.highlightables.Length > 0)
+        {
+            SetObjectsLayer(step.highlightables, highlightLayerName);
+            previousHighlightables = step.highlightables;
+        }
+        else
+        {
+            previousHighlightables = null;
+        }
+    }
+
+    // Helper to set layer by name for an array of objects (and their children)
+    void SetObjectsLayer(GameObject[] objects, string layerName)
+    {
+        int layer = LayerMask.NameToLayer(layerName);
+        foreach (var obj in objects)
+        {
+            if (obj != null)
+            {
+                //obj.layer = layer; // Set the layer for the object itself
+                SetLayerRecursively(obj, layer);
+            }
+        }
+    }
+
+    // Recursively set layer for object and all children
+    void SetLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, layer);
+        }
+    }
+    #endregion
+
     #region Timed Steps
     // Call this in OnTriggerEnter for the timed step
     public void StartTimedAction()
@@ -299,6 +369,8 @@ public class GameManager : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(DelayAndPlayAudio(step));
         }
+
+        UpdateHighlightables(); // <-- Add this line
 
         Debug.Log("Current Step: " + currentRecipe[currentStepIndex].description + " and it must be done " + currentRecipe[currentStepIndex].actionCount + " times.");
         if (stepText != null)
