@@ -6,20 +6,20 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class GameManager : MonoBehaviour
 {
-    // Define a RecipeStep class for each step in the recipe
     [System.Serializable]
     public class RecipeStep
     {
-        public string description; // Description of the step, e.g., "Slice tomatoes", "Add water to pot"
-        public string utensil; // The utensil required for this step, e.g., "Knife", "Mortar", "Pestle", "Pot", this could maybe be removed
+        public string description;
+        public string utensil;
         [Tooltip("The 'time' or 'action count' required for this step, e.g., 3 slices, 5 seconds, etc.")]
-        public int actionCount; // Number of times an action is performed for this step
-        public ActionType actionType; // What type of action this is, e.g., "Instant action", "Number of actions", "Seconds passed"
-        public AudioClip voiceClip; // Assign in Inspector
-        public int delayBeforeAudio; // Delay before playing the audio clip, useful for timed steps
-        public string stepID; // Unique identifier for the step, rather than looking at indexes, we can use this to identify steps
-        public GameObject[] highlightables; // Optional array of GameObjects to highlight during this step
+        public int actionCount;
+        public ActionType actionType;
+        public AudioClip voiceClip;
+        public int delayBeforeAudio;
+        public string stepID;
+        public GameObject[] highlightables;
     }
+
     public enum ActionType
     {
         InstantAction,
@@ -28,12 +28,10 @@ public class GameManager : MonoBehaviour
         Auto
     }
 
-    // Enum for recipe selection
     public enum RecipeType { JollofRice, Fufu }
     public RecipeType CurrentRecipe { get; set; }
     public RecipeType selectedRecipe = RecipeType.Fufu;
 
-    // Define recipes
     public List<RecipeStep> jollofRiceRecipe = new List<RecipeStep>
     {
         new() { description = "Slice tomatoes and place in mortar", utensil = "Mortar", actionCount = 3, actionType = ActionType.NumberOfActions },
@@ -42,7 +40,7 @@ public class GameManager : MonoBehaviour
         new() { description = "Ground everything into a paste", utensil = "Pestle", actionCount = 5, actionType = ActionType.NumberOfActions },
         new() { description = "Add water to pot and bring to a boil", utensil = "Pot", actionCount = 1, actionType = ActionType.InstantAction },
         new() { description = "Add paste, spices, and meat to the stew", utensil = "Pot", actionCount = 3, actionType = ActionType.InstantAction },
-        new() { description = "Add rice to the pot; it will absorb the stew into it", utensil = "Pot", actionCount = 3, actionType = ActionType.SecondsPassed }, // raycast hit to pot to add rice
+        new() { description = "Add rice to the pot; it will absorb the stew into it", utensil = "Pot", actionCount = 3, actionType = ActionType.SecondsPassed },
         new() { description = "Stir the rice until all the liquid is absorbed", utensil = "Pot", actionCount = 5, actionType = ActionType.SecondsPassed }
     };
 
@@ -63,19 +61,21 @@ public class GameManager : MonoBehaviour
     };
 
     public List<RecipeStep> currentRecipe = new List<RecipeStep>();
-    public TextMeshProUGUI stepText; // Reference to a TextMeshPro world component to display the current step
+    public TextMeshProUGUI stepText;
     public int currentStepIndex = 0;
     public int actionCount = 0;
 
-    // For steps that require time to pass, e.g., "Seconds passed"
-    private bool isTiming = false; // For steps that require time to pass
-    private float elapsedTime = 0f; // Timer for "Seconds passed" steps
+    private bool isTiming = false;
+    private float elapsedTime = 0f;
 
-    private AudioSource audioSource; // Assign in Inspector
+    private AudioSource audioSource;
+
+    [Header("Additional Voice Clips")]
+    public AudioClip[] additionalVoiceClips;  // Optional voice fallback
 
     [Space(10)]
-    public bool recipeComplete = false; // This is used to determine if the recipe is complete or not
-    CampFire campFire; // Reference to the CampFire script, if needed
+    public bool recipeComplete = false;
+    CampFire campFire;
 
     [Header("UI")]
     public GameObject delayPanel;
@@ -83,9 +83,9 @@ public class GameManager : MonoBehaviour
     [Space(10)]
     [Header("Jollof Rice Recipe Objects")]
     public GameObject[] jollofVeggies;
-    public GameObject mashedTexture; // This is the mashed texture for the jollof rice, which will be enabled when the veggies are mashed
-    public int mashedTextureIndex = 4; // The index of the step where the mashed texture should be enabled
-    public GameObject mortar; // The mortar object for the jollof rice recipe
+    public GameObject mashedTexture;
+    public int mashedTextureIndex = 4;
+    public GameObject mortar;
 
     [Space(10)]
     [Header("Recipe Complete!")]
@@ -94,37 +94,25 @@ public class GameManager : MonoBehaviour
 
     [Space(10)]
     [Header("Highlighting")]
-    public string highlightLayerName = "Outlined Objects"; // Set this to your highlight layer name in Unity
-    public string defaultLayerName = "Default";     // Set this to your default layer name in Unity
+    public string highlightLayerName = "Outlined Objects";
+    public string defaultLayerName = "Default";
 
     private GameObject[] previousHighlightables = null;
 
     static GameManager instance;
-    public static GameManager Instance
-    {
-        get { return instance; }
-    }
+    public static GameManager Instance => instance;
 
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
     }
 
     void Start()
     {
         Fader.FadeIn();
-
-        // Always clear the current recipe list first
         currentRecipe.Clear();
 
-        // Choose recipe based on selectedRecipe
         switch (selectedRecipe)
         {
             case RecipeType.JollofRice:
@@ -139,164 +127,98 @@ public class GameManager : MonoBehaviour
 
         currentStepIndex = 0;
         actionCount = 0;
-        ShowCurrentStep();
+        recipeComplete = false;
 
-        recipeComplete = false; // Reset recipe complete status
-
-        // Grab campfire reference if it exists
         campFire = FindObjectOfType<CampFire>();
+        if (campFire && campFire.isFireOn)
+        {
+            CompleteCurrentStep();
+        }
 
-        if (campFire.isFireOn)
-        {
-            Debug.Log("Campfire is already on, no need to turn it on again.");
-            CompleteCurrentStep(); // Automatically complete the step if the campfire is already on
-        }
-        else
-        {
-            Debug.Log("Campfire is off, it will be turned on when the action count is reached.");
-        }
+        ShowCurrentStep();
     }
 
     private void Update()
     {
-        if (recipeComplete)
-            {
-            // Debug.Log("Recipe is complete, no further steps can be processed.");
-            return; // If the recipe is complete, do not process any further steps
-        }
+        if (recipeComplete) return;
+
+        if (currentStepIndex >= currentRecipe.Count) return;
 
         var step = currentRecipe[currentStepIndex];
-        if (currentStepIndex >= currentRecipe.Count)
+
+        if (step.actionType == ActionType.SecondsPassed && isTiming)
         {
-            Debug.LogWarning("Current step index is out of bounds of the recipe list.");
-            return;
-        }
-        // Only run timer for "Seconds passed" steps
-        if (currentRecipe.Count > 0 && currentStepIndex < currentRecipe.Count)
-        {
-            //var step = currentRecipe[currentStepIndex];
-            if (step.actionType == ActionType.SecondsPassed && isTiming)
+            elapsedTime += Time.deltaTime;
+            if (elapsedTime >= step.actionCount)
             {
-                elapsedTime += Time.deltaTime;
-                if (elapsedTime >= step.actionCount) // actionCount used as seconds
-                {
-                    isTiming = false;
-                    elapsedTime = 0f;
-                    CompleteCurrentStep();
-                    Debug.Log("Timed step complete. Moving onto next step.");
-                }
+                isTiming = false;
+                elapsedTime = 0f;
+                CompleteCurrentStep();
             }
         }
 
         if (step.actionType == ActionType.Auto)
+        {
+            elapsedTime += Time.deltaTime;
+            if (elapsedTime >= step.actionCount)
             {
-                elapsedTime += Time.deltaTime;
-                if (elapsedTime >= step.actionCount) // actionCount used as seconds
-                {
-                    isTiming = false;
-                    elapsedTime = 0f;
-                    CompleteCurrentStep();
-                    Debug.Log("Automatically moving onto the next step after 5 seconds have passed");
-                }
+                isTiming = false;
+                elapsedTime = 0f;
+                CompleteCurrentStep();
             }
+        }
     }
 
-    // Call this when a task is completed
     public void CompleteCurrentStep()
     {
-        actionCount = 0; // Reset action count for the next step
-        // If not at the last step, increment the index (recipe step) and show the next step
+        actionCount = 0;
         currentStepIndex++;
-        // Debug.Log("Complete the current step, reset the action count (" + actionCount + "), increment the step index, and show the next step.");
+
         if (currentStepIndex < currentRecipe.Count)
         {
-            // This is a VERY lazy way to disable the jollof veggies, but it works for now
-            if (RecipeType.JollofRice == selectedRecipe && currentStepIndex == mashedTextureIndex)
+            if (selectedRecipe == RecipeType.JollofRice && currentStepIndex == mashedTextureIndex)
             {
-                mashedTexture.SetActive(true); // Enable the mashed texture
+                mashedTexture.SetActive(true);
 
-                // Set the mortar to be interactable at this point
-                // Get the XRGrabInteractable component
                 XRGrabInteractable grab = mortar.GetComponent<XRGrabInteractable>();
-                if (grab != null)
-                {
-                    grab.enabled = true; // Enable the grab component
-                }
+                if (grab != null) grab.enabled = true;
 
-                // Get the Rigidbody and disable kinematic
                 Rigidbody rb = mortar.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    rb.isKinematic = false;
-                }
+                if (rb != null) rb.isKinematic = false;
             }
 
             ShowCurrentStep();
         }
         else
         {
-            Debug.Log("Recipe complete!");
-            recipeComplete = true; // Set recipe complete status to true
-            // Handle recipe completion
-            if (stepText != null)
-            {
-                stepText.text = "Recipe Complete!";
-            }
-            if (particleEffect != null)
-            {
-                Instantiate(particleEffect, stepText.transform.position, Quaternion.identity);
-            }
-            if (audioSource != null && celebration != null)
-            {
-                audioSource.PlayOneShot(celebration);
-            }
+            recipeComplete = true;
+            if (stepText != null) stepText.text = "Recipe Complete!";
+            if (particleEffect != null) Instantiate(particleEffect, stepText.transform.position, Quaternion.identity);
+            if (audioSource != null && celebration != null) audioSource.PlayOneShot(celebration);
         }
     }
 
-    // Use this to handle doing an action 'x' amount of times
     public void IncrementAction()
     {
-        Debug.Log("Incrementing action count. The current action count is " + actionCount + " and after this it should be " + (actionCount + 1));
         actionCount++;
         if (actionCount >= currentRecipe[currentStepIndex].actionCount)
         {
-            Debug.Log("Step completed: " + currentRecipe[currentStepIndex].description + ". Moving onto next step.");
-            CompleteCurrentStep(); // Automatically complete the step if action count is met
-        }
-        else
-        {
-            Debug.Log("Action performed: " + actionCount + "/" + currentRecipe[currentStepIndex].actionCount);
+            CompleteCurrentStep();
         }
     }
 
-    /// <summary>
-    /// This is used for any situation where you need to reduce the action count, such as when an action is undone or a step is reset.
-    /// * It will not allow the action count to go below zero.
-    /// </summary>
     public void ReduceAction()
     {
-        if (actionCount > 0)
-        {
-            actionCount--;
-            Debug.Log("Action count reduced. Current action count: " + actionCount);
-        }
-        else
-        {
-            Debug.LogWarning("Action count is already at zero, cannot reduce further.");
-        }
+        if (actionCount > 0) actionCount--;
     }
 
-    #region Highlight Logic
-    // Call this at the start of each step to update highlightables
     void UpdateHighlightables()
     {
-        // Disable previous highlightables
         if (previousHighlightables != null)
         {
             SetObjectsLayer(previousHighlightables, defaultLayerName);
         }
 
-        // Enable current step's highlightables
         var step = currentRecipe[currentStepIndex];
         if (step.highlightables != null && step.highlightables.Length > 0)
         {
@@ -309,7 +231,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Helper to set layer by name for an array of objects (and their children)
     void SetObjectsLayer(GameObject[] objects, string layerName)
     {
         int layer = LayerMask.NameToLayer(layerName);
@@ -317,13 +238,11 @@ public class GameManager : MonoBehaviour
         {
             if (obj != null)
             {
-                //obj.layer = layer; // Set the layer for the object itself
                 SetLayerRecursively(obj, layer);
             }
         }
     }
 
-    // Recursively set layer for object and all children
     void SetLayerRecursively(GameObject obj, int layer)
     {
         obj.layer = layer;
@@ -332,54 +251,52 @@ public class GameManager : MonoBehaviour
             SetLayerRecursively(child.gameObject, layer);
         }
     }
-    #endregion
 
-    #region Timed Steps
-    // Call this in OnTriggerEnter for the timed step
     public void StartTimedAction()
     {
         isTiming = true;
     }
 
-    // Call this in OnTriggerExit for the timed step
     public void StopTimedAction()
     {
         isTiming = false;
     }
-    #endregion
 
     IEnumerator DelayAndPlayAudio(RecipeStep step)
     {
         if (delayPanel) delayPanel.SetActive(true);
+
         if (step.delayBeforeAudio > 0)
             yield return new WaitForSeconds(step.delayBeforeAudio);
+
         if (delayPanel) delayPanel.SetActive(false);
-        Debug.Log("Playing audio for step: " + step.description + " after a delay of " + step.delayBeforeAudio + " seconds.");
-        if (audioSource && step.voiceClip)
-            audioSource.PlayOneShot(step.voiceClip);
+
+        if (audioSource != null)
+        {
+            if (step.voiceClip != null)
+            {
+                audioSource.PlayOneShot(step.voiceClip);
+            }
+            else if (additionalVoiceClips != null && additionalVoiceClips.Length > 0)
+            {
+                AudioClip fallback = additionalVoiceClips[Random.Range(0, additionalVoiceClips.Length)];
+                audioSource.PlayOneShot(fallback);
+                Debug.Log("Playing fallback voice clip: " + fallback.name);
+            }
+        }
     }
 
-    // Display the current step in the TextMeshPro component and in the console
     void ShowCurrentStep()
     {
-        // Play audio for the current step if available
         var step = currentRecipe[currentStepIndex];
-        if (audioSource != null && step.voiceClip != null)
-        {
-            StopAllCoroutines();
-            StartCoroutine(DelayAndPlayAudio(step));
-        }
+        StopAllCoroutines();
+        StartCoroutine(DelayAndPlayAudio(step));
 
-        UpdateHighlightables(); // <-- Add this line
+        UpdateHighlightables();
 
-        Debug.Log("Current Step: " + currentRecipe[currentStepIndex].description + " and it must be done " + currentRecipe[currentStepIndex].actionCount + " times.");
         if (stepText != null)
         {
-            stepText.text = currentRecipe[currentStepIndex].description + " (" + currentRecipe[currentStepIndex].utensil + ")";
-        }
-        else
-        {
-            Debug.LogWarning("No TextMeshPro component assigned to display the step text.");
+            stepText.text = step.description + " (" + step.utensil + ")";
         }
     }
 
@@ -389,20 +306,5 @@ public class GameManager : MonoBehaviour
         {
             CompleteCurrentStep();
         }
-
-        //if (GUI.Button(new Rect(10, 30, 100, 20), "Start Timer"))
-        //{
-        //    StartTimedAction();
-        //}
-
-        //if (GUI.Button(new Rect(10, 50, 100, 20), "Stop Timer"))
-        //{
-        //    StopTimedAction();
-        //}
-
-        //if (GUI.Button(new Rect(10, 70, 100, 20), "Add Action"))
-        //{
-        //    IncrementAction();
-        //}
     }
 }

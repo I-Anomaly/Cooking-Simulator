@@ -7,33 +7,37 @@ public class CuttableObject : MonoBehaviour
     public GameObject HalfsPrefab;
     public bool isCut;
 
-    AudioSource audioSource; // Reference to the AudioSource component for sound effects
-    public AudioClip[] cuttingSounds; // Array to hold different cutting sound effects
+    [Header("Chop Sound Settings")]
+    public AudioClip[] chopSounds; // Assign 3 cutting sounds in Inspector
 
     ProgressionManager progressionManager;
 
     private void Start()
     {
         progressionManager = GetComponent<ProgressionManager>();
-        audioSource = GetComponent<AudioSource>();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.name.Contains("Knife") && !isCut)
+        if (collision.gameObject.name.Contains("Knife") && !isCut)
         {
-            GameObject temp = GameObject.Instantiate(HalfsPrefab,transform.position,transform.rotation);
-            temp = GameObject.Instantiate(HalfsPrefab,transform.position, transform.rotation);
-            temp.transform.Rotate(Vector3.up * 180);
-            if (audioSource != null && cuttingSounds.Length > 0)
+            // Play random chopping sound at object's position
+            if (chopSounds != null && chopSounds.Length > 0)
             {
-                // Play a random cutting sound from the array
-                int randomIndex = Random.Range(0, cuttingSounds.Length);
-                audioSource.PlayOneShot(cuttingSounds[randomIndex]);
+                int index = Random.Range(0, chopSounds.Length);
+                AudioSource.PlayClipAtPoint(chopSounds[index], transform.position);
             }
+
+            // Instantiate chopped halves
+            GameObject temp = Instantiate(HalfsPrefab, transform.position, transform.rotation);
+            temp.transform.Rotate(Vector3.up * 180);
+
+            // Trigger next recipe step
+            if (progressionManager != null)
+                progressionManager.TryProgressStep();
+
             isCut = true;
             Destroy(this.gameObject);
-
         }
     }
 }

@@ -917,11 +917,11 @@ PlayerSettings:
   apiCompatibilityLevel: 3
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 0b5938eb-fde0-4de6-a759-25ad86b714d4
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Cooking Sim 2025-07-31_20-58-35
+  organizationId: ashmartin855
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
