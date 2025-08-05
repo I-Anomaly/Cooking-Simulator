@@ -30,6 +30,7 @@ public class CuttableObject : MonoBehaviour
 
             // Instantiate chopped halves
             GameObject temp = Instantiate(HalfsPrefab, transform.position, transform.rotation);
+            temp = GameObject.Instantiate(HalfsPrefab, transform.position, transform.rotation);
             temp.transform.Rotate(Vector3.up * 180);
 
             // Trigger next recipe step
