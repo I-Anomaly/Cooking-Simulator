@@ -312,9 +312,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  respawnOnGround: 0
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
-  respawnDistanceThreshold: 15
+  respawnSound: {fileID: 0}
   respawnDelay: 1
 --- !u!1 &8964240592964075510
 GameObject:

@@ -307,6 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  respawnOnGround: 1
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
   respawnSound: {fileID: 0}
@@ -323,9 +324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 664b0b2f77a77dc4b826982460e0e94f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentRecipeStep: 2
   stepType: 2
-  utensilType: 
+  stepID: 
   requiredTag: Mortar
   disableOnComplete: 1
 --- !u!114 &-5605021817765127488

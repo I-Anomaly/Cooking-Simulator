@@ -373,6 +373,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 5dfb3ac8c4c2539409e729c2e02ca4fe, type: 3}
   requiredRecipeStep: 1
   requiredBoilStep: 3
+  requiredMortarAndPestleStep: 5
   yamRenderer: {fileID: 5566410533974745199}
 --- !u!114 &7185940367196018589
 MonoBehaviour:
@@ -386,6 +387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  respawnOnGround: 1
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
   respawnSound: {fileID: 0}

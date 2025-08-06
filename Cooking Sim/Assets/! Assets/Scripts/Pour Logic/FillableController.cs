@@ -93,7 +93,7 @@ public class FillableController : MonoBehaviour
 
         if (recipe == GameManager.RecipeType.JollofRice)
         {
-            Debug.Log("Jollof Rice step: " + step + " with stream type: " + streamType);
+            //Debug.Log("Jollof Rice step: " + step + " with stream type: " + streamType);
 
             // Oil step: fill and progress
             if (step == jollofOilStepIndex && streamType == StreamType.Oil)

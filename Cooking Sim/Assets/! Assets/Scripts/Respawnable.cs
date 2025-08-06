@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Respawnable : MonoBehaviour
 {
+    public bool respawnOnGround;
+
     public GameObject respawnParticleEffect; // Optional particle effect for respawn
     public AudioClip respawnSound; // Optional sound effect for respawn
 
@@ -78,6 +80,23 @@ public class Respawnable : MonoBehaviour
                 StopCoroutine(respawnCoroutine);
                 respawnCoroutine = null;
                 // Debug.Log("Respawn cancelled, object re-entered the zone.");
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (respawnOnGround != true)
+        {
+            // Debug.Log("This isn't ground, not respawning.");
+            return;
+        } else
+        {
+            if (collision.gameObject.CompareTag("Ground"))
+            {
+                // Debug.Log("Hit the ground, respawning object.");
+                if (respawnCoroutine == null)
+                    respawnCoroutine = StartCoroutine(RespawnAfterDelay());
             }
         }
     }

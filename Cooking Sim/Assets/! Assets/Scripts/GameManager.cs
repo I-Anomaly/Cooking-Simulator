@@ -85,6 +85,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] jollofVeggies;
     public GameObject mashedTexture;
     public int mashedTextureIndex = 4;
+    public PourDetector mashedPourDetector;
     public GameObject mortar;
 
     [Space(10)]
@@ -176,18 +177,33 @@ public class GameManager : MonoBehaviour
 
         if (currentStepIndex < currentRecipe.Count)
         {
-            if (selectedRecipe == RecipeType.JollofRice && currentStepIndex == mashedTextureIndex)
+            // Activate the mashed texture, otherwise disable it
+            if (selectedRecipe == RecipeType.JollofRice && currentStepIndex == mashedTextureIndex && mashedTexture.activeInHierarchy != true)
             {
                 mashedTexture.SetActive(true);
+                mashedPourDetector.enabled = true;
 
                 XRGrabInteractable grab = mortar.GetComponent<XRGrabInteractable>();
                 if (grab != null) grab.enabled = true;
 
                 Rigidbody rb = mortar.GetComponent<Rigidbody>();
                 if (rb != null) rb.isKinematic = false;
+            } else
+            {
+                if (mashedTexture.activeInHierarchy == true)
+                {
+                    Debug.Log("The mashed texture is active");
+                    if (currentStepIndex == (mashedTextureIndex+2))
+                    {
+                        Debug.Log("The current step index is " + currentStepIndex + " and the mashed texture should be disabled here.");
+                        mashedTexture.SetActive(false);
+                        mashedPourDetector.enabled = false;
+                    }
+                }
+                    
             }
 
-            ShowCurrentStep();
+                ShowCurrentStep();
         }
         else
         {
