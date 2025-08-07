@@ -6,6 +6,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class GameManager : MonoBehaviour
 {
+    /// <summary>
+    /// Each step in a recipe and the variables associated with it.
+    /// </summary>
     [System.Serializable]
     public class RecipeStep
     {
@@ -20,6 +23,9 @@ public class GameManager : MonoBehaviour
         public GameObject[] highlightables;
     }
 
+    /// <summary>
+    /// Action types for recipe steps.
+    /// </summary>
     public enum ActionType
     {
         InstantAction,
@@ -28,6 +34,7 @@ public class GameManager : MonoBehaviour
         Auto
     }
 
+    // Recipe types
     public enum RecipeType { JollofRice, Fufu }
     public RecipeType CurrentRecipe { get; set; }
     public RecipeType selectedRecipe = RecipeType.Fufu;
@@ -72,6 +79,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Additional Voice Clips")]
     public AudioClip[] additionalVoiceClips;  // Optional voice fallback
+    public AudioSource audioSourceVoices;
 
     [Space(10)]
     public bool recipeComplete = false;
@@ -87,6 +95,9 @@ public class GameManager : MonoBehaviour
     public int mashedTextureIndex = 4;
     public PourDetector mashedPourDetector;
     public GameObject mortar;
+
+    [Space(10)]
+    [Header("Fufu Items")]
 
     [Space(10)]
     [Header("Recipe Complete!")]
@@ -111,9 +122,10 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        Fader.FadeIn();
-        currentRecipe.Clear();
+        Fader.FadeIn(); // Fade in from black at the start of the scene
+        currentRecipe.Clear(); // Ensure the current recipe is clear before populating it
 
+        // Set the current recipe based on the selected recipe
         switch (selectedRecipe)
         {
             case RecipeType.JollofRice:
@@ -124,27 +136,34 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
+        // Get the AudioSource component attached to this GameObject
         audioSource = GetComponent<AudioSource>();
 
+        // Reset variables
         currentStepIndex = 0;
         actionCount = 0;
         recipeComplete = false;
 
+        // Find the CampFire in the scene, if already on, complete the step
         campFire = FindObjectOfType<CampFire>();
         if (campFire && campFire.isFireOn)
         {
             CompleteCurrentStep();
         }
 
+        // Show the first step
         ShowCurrentStep();
     }
 
     private void Update()
     {
+        // If the recipe is complete, do nothing
         if (recipeComplete) return;
 
+        // If we've reached the end of the recipe, do nothing
         if (currentStepIndex >= currentRecipe.Count) return;
 
+        // Handle timing for steps that require it
         var step = currentRecipe[currentStepIndex];
 
         if (step.actionType == ActionType.SecondsPassed && isTiming)
@@ -158,6 +177,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        // Automatically complete steps that are set to Auto after the specified time
         if (step.actionType == ActionType.Auto)
         {
             elapsedTime += Time.deltaTime;
@@ -170,13 +190,39 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Step Completion
+    /// <summary>
+    /// 'Completes' the current step if audio is not playing; otherwise, waits for audio to finish before completing the step.
+    /// </summary>
     public void CompleteCurrentStep()
     {
+        Debug.Log("Attempting to complete step " + currentStepIndex);
+        // If voice audio is playing, wait for it to finish before completing the step
+        if (audioSourceVoices != null && audioSourceVoices.isPlaying)
+        {
+            Debug.Log("Voice audio is playing, waiting to complete step.");
+            StartCoroutine(WaitForVoiceAndCompleteStep());
+            return;
+        }
+
+        ActuallyCompleteCurrentStep();
+
+    }
+
+    /// <summary>
+    /// Actually completes the current step, increments the step index, and shows the next step.
+    /// This will also enable the mashed texture logic for the Jollof Rice recipe.
+    /// </summary>
+    private void ActuallyCompleteCurrentStep()
+    {
+        Debug.Log("ACTUALLY completing step " + currentStepIndex);
         actionCount = 0;
         currentStepIndex++;
 
+        
         if (currentStepIndex < currentRecipe.Count)
         {
+            #region Mashed Texture Logic
             // Activate the mashed texture, otherwise disable it
             if (selectedRecipe == RecipeType.JollofRice && currentStepIndex == mashedTextureIndex && mashedTexture.activeInHierarchy != true)
             {
@@ -188,22 +234,23 @@ public class GameManager : MonoBehaviour
 
                 Rigidbody rb = mortar.GetComponent<Rigidbody>();
                 if (rb != null) rb.isKinematic = false;
-            } else
+            }
+            else
             {
                 if (mashedTexture.activeInHierarchy == true)
                 {
                     Debug.Log("The mashed texture is active");
-                    if (currentStepIndex == (mashedTextureIndex+2))
+                    if (currentStepIndex == (mashedTextureIndex + 2))
                     {
                         Debug.Log("The current step index is " + currentStepIndex + " and the mashed texture should be disabled here.");
                         mashedTexture.SetActive(false);
                         mashedPourDetector.enabled = false;
                     }
                 }
-                    
             }
+            #endregion
 
-                ShowCurrentStep();
+            ShowCurrentStep();
         }
         else
         {
@@ -212,8 +259,24 @@ public class GameManager : MonoBehaviour
             if (particleEffect != null) Instantiate(particleEffect, stepText.transform.position, Quaternion.identity);
             if (audioSource != null && celebration != null) audioSource.PlayOneShot(celebration);
         }
+        
+    }
+    #endregion
+
+    /// <summary>
+    /// Checks if the voice audio is playing, and waits for it to finish before completing the step.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator WaitForVoiceAndCompleteStep()
+    {
+        while (audioSourceVoices != null && audioSourceVoices.isPlaying)
+        {
+            yield return null;
+        }
+        ActuallyCompleteCurrentStep();
     }
 
+    #region Action Management
     public void IncrementAction()
     {
         actionCount++;
@@ -277,45 +340,63 @@ public class GameManager : MonoBehaviour
     {
         isTiming = false;
     }
+    #endregion
 
+    /// <summary>
+    /// Delays for the specified time before playing the audio clip for the given step.
+    /// </summary>
+    /// <param name="step">Recipe step number</param>
+    /// <returns></returns>
     IEnumerator DelayAndPlayAudio(RecipeStep step)
     {
         if (delayPanel) delayPanel.SetActive(true);
 
+        Debug.Log("Delaying for " + step.delayBeforeAudio + " seconds before playing audio.");
         if (step.delayBeforeAudio > 0)
             yield return new WaitForSeconds(step.delayBeforeAudio);
 
         if (delayPanel) delayPanel.SetActive(false);
 
-        if (audioSource != null)
+        // Use the assigned voice clip, or fallback to a random additional voice clip if none is assigned, and use the audio source located on the VoiceOver child in GameManager
+        if (audioSourceVoices != null)
         {
             if (step.voiceClip != null)
             {
-                audioSource.PlayOneShot(step.voiceClip);
+                Debug.Log("Playing voice clip: " + step.voiceClip.name);
+                audioSourceVoices.PlayOneShot(step.voiceClip);
             }
             else if (additionalVoiceClips != null && additionalVoiceClips.Length > 0)
             {
                 AudioClip fallback = additionalVoiceClips[Random.Range(0, additionalVoiceClips.Length)];
-                audioSource.PlayOneShot(fallback);
+                audioSourceVoices.PlayOneShot(fallback);
                 Debug.Log("Playing fallback voice clip: " + fallback.name);
             }
         }
     }
 
+    /// <summary>
+    /// Shows the current step in the UI and plays the associated audio clip.
+    /// </summary>
     void ShowCurrentStep()
     {
         var step = currentRecipe[currentStepIndex];
-        StopAllCoroutines();
-        StartCoroutine(DelayAndPlayAudio(step));
 
+        StopAllCoroutines();
+
+        if(step.delayBeforeAudio > 0 && step.voiceClip != null)
+            StartCoroutine(DelayAndPlayAudio(step));
+
+        // Update highlightables
         UpdateHighlightables();
 
+        // Update the step text UI
         if (stepText != null)
         {
             stepText.text = step.description + " (" + step.utensil + ")";
         }
     }
 
+    // For testing purposes only: Complete the current step when the button is pressed
     private void OnGUI()
     {
         if (GUI.Button(new Rect(10, 80, 100, 20), "Complete Step"))
