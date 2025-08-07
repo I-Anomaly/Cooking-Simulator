@@ -37,11 +37,23 @@ public class FillableController : MonoBehaviour
     private float stepTimer = 0f;
     private float stepTimerDuration = 0f;
 
+    private MeshRenderer fillableMeshRenderer; // To enable and disable the mesh renderer of the fillable object
+
     GameManager gm;
     private void Start()
     {
         // Get the game manager instance
         gm = GameManager.Instance;
+        fillableMeshRenderer = GetComponent<MeshRenderer>();
+
+        if (fillableMeshRenderer == null)
+        {
+            Debug.LogError("There is no mesh renderer recognized on the object.");
+        }
+        else
+        {
+            fillableMeshRenderer.enabled = false; // Disable the mesh renderer initially if it's not
+        }
     }
 
     void Update()
@@ -98,6 +110,7 @@ public class FillableController : MonoBehaviour
             // Oil step: fill and progress
             if (step == jollofOilStepIndex && streamType == StreamType.Oil)
             {
+                fillableMeshRenderer.enabled = true; // Enable the mesh renderer for the fillable object
                 currentFill += amount * fillRate * Time.deltaTime;
                 currentFill = Mathf.Clamp(currentFill, 0, maxFill);
                 fillableObject.localScale = new Vector3(1, currentFill, 1);
@@ -149,6 +162,7 @@ public class FillableController : MonoBehaviour
             Debug.Log("Fufu water step: " + step + " with stream type: " + streamType);
             if (step == fufuWaterStepIndex)
             {
+                fillableMeshRenderer.enabled = true; // Enable the mesh renderer for the fillable object
                 // Fufu logic; when filled, complete step
                 currentFill += amount * fillRate * Time.deltaTime;
                 currentFill = Mathf.Clamp(currentFill, 0, maxFill);
