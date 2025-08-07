@@ -261,7 +261,6 @@ public class GameManager : MonoBehaviour
         }
         
     }
-    #endregion
 
     /// <summary>
     /// Checks if the voice audio is playing, and waits for it to finish before completing the step.
@@ -275,6 +274,7 @@ public class GameManager : MonoBehaviour
         }
         ActuallyCompleteCurrentStep();
     }
+    #endregion
 
     #region Action Management
     public void IncrementAction()
@@ -310,6 +310,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Layer Management to fix collision issues
     void SetObjectsLayer(GameObject[] objects, string layerName)
     {
         int layer = LayerMask.NameToLayer(layerName);
@@ -330,6 +331,7 @@ public class GameManager : MonoBehaviour
             SetLayerRecursively(child.gameObject, layer);
         }
     }
+    #endregion
 
     public void StartTimedAction()
     {
