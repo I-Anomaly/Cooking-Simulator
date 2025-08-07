@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepType: 2
-  stepID: 
+  stepID: onion_bowl
   requiredTag: Mortar
   disableOnComplete: 1
 --- !u!114 &-5605021817765127488
