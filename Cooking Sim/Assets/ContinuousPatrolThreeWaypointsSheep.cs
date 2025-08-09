@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ContinuousPatrolThreeWaypoints : MonoBehaviour
+public class ContinuousPatrolThreeWaypointsSheep : MonoBehaviour
 {
     [Header("Animator (in-place)")]
     public Animator animator;
-    [Tooltip("Animator STATE name to play (not just the clip).")]
     public string stateName = "RunInPlace";
-    [Tooltip("Optional: clip name to look up a base length. If empty, uses stateName.")]
     public string clipName = "";
 
     [Header("Waypoints (exactly three)")]
@@ -16,29 +14,22 @@ public class ContinuousPatrolThreeWaypoints : MonoBehaviour
     public Transform waypointC;
 
     public enum PathMode { Loop, PingPong }
-    [Tooltip("Loop: A→B→C→A…  PingPong: A→B→C→B→A…")]
     public PathMode pathMode = PathMode.PingPong;
 
     [Header("Rhythm & Movement")]
-    [Tooltip("Wait before each plays/move step.")]
     public float delayBetweenPlays = 1f;
-    [Tooltip("How far to advance toward the current waypoint per play.")]
     public float moveDistancePerLoop = 2f;
-    [Tooltip("Considered arrived when within this distance of the waypoint.")]
     public float arrivalThreshold = 0.05f;
 
     [Header("Facing / Turns")]
-    [Tooltip("Pause right before a facing/turn (cosmetic).")]
     public float turnPause = 0.2f;
-    [Tooltip("Smooth face duration before each step. 0 = instant snap.")]
     public float turnDuration = 0.15f;
 
-    [Header("Ground Alignment")]
-    public LayerMask groundMask = -1;
-    [Tooltip("Height above ground to keep the character.")]
-    public float heightOffset = 0.0f;
-    [Tooltip("Max raycast distance to find ground.")]
+    [Header("Terrain Alignment")]
+    public LayerMask groundMask = Physics.DefaultRaycastLayers;
+    public float raycastHeight = 2f;
     public float raycastDistance = 5f;
+    public float slopeAlignSpeed = 8f; // how quickly tilt/pitch follows the slope
 
     [Header("Misc")]
     public bool playOnStart = true;
@@ -64,7 +55,6 @@ public class ContinuousPatrolThreeWaypoints : MonoBehaviour
         }
 
         animator.applyRootMotion = false;
-
         baseClipLength = FindClipLength(string.IsNullOrEmpty(clipName) ? stateName : clipName);
 
         if (playOnStart)
@@ -74,11 +64,6 @@ public class ContinuousPatrolThreeWaypoints : MonoBehaviour
     void OnDisable()
     {
         if (patrolRoutine != null) StopCoroutine(patrolRoutine);
-    }
-
-    void Update()
-    {
-        AlignToGround();
     }
 
     IEnumerator PatrolLoop(Transform[] wps)
@@ -92,10 +77,12 @@ public class ContinuousPatrolThreeWaypoints : MonoBehaviour
         while (true)
         {
             int next = NextIndex(current, ref dir, wps.Length);
-
             yield return StartCoroutine(AdvanceToWaypoint(wps[current].position, wps[next].position));
-
-            transform.position = wps[next].position;
+            // snap to waypoint but keep Y from ground
+            Vector3 snap = wps[next].position;
+            if (Physics.Raycast(snap + Vector3.up * raycastHeight, Vector3.down, out var finalHit, raycastDistance, groundMask))
+                snap.y = finalHit.point.y;
+            transform.position = snap;
             current = next;
         }
     }
@@ -112,12 +99,11 @@ public class ContinuousPatrolThreeWaypoints : MonoBehaviour
             Vector3 stepDir = delta.normalized;
 
             if (turnPause > 0f) yield return new WaitForSeconds(turnPause);
-
             yield return StartCoroutine(FaceDirection(stepDir));
 
             if (delayBetweenPlays > 0f)
             {
-                if (debugLogs) Debug.Log($"[Patrol] Delay {delayBetweenPlays:F2}s before step. t={Time.time:F2}");
+                if (debugLogs) Debug.Log($"[Patrol] Delay {delayBetweenPlays:F2}s before step. t={Time.time:F02}");
                 yield return new WaitForSeconds(delayBetweenPlays);
             }
 
@@ -136,24 +122,57 @@ public class ContinuousPatrolThreeWaypoints : MonoBehaviour
             if (debugLogs)
                 Debug.Log($"[Patrol] Step for ~{duration:F2}s, dist {stepDist:F2}. End≈{Time.time + duration:F2}");
 
+            // KEY: preserve the current yaw (horizontal facing). We'll only change pitch/roll to match slope.
+            Vector3 flatForward = new Vector3(transform.forward.x, 0f, transform.forward.z).magnitude > 0.001f
+                ? new Vector3(transform.forward.x, 0f, transform.forward.z).normalized
+                : new Vector3(stepDir.x, 0f, stepDir.z).normalized;
+
             float t = 0f;
             while (t < duration)
             {
                 float k = Mathf.Clamp01(t / duration);
-                transform.position = Vector3.Lerp(startPos, targetPos, k);
+                Vector3 flatPos = Vector3.Lerp(startPos, targetPos, k);
+                Vector3 posToSet = flatPos;
+
+                // Raycast to ground to get Y and normal
+                if (Physics.Raycast(flatPos + Vector3.up * raycastHeight, Vector3.down, out RaycastHit hit, raycastDistance, groundMask))
+                {
+                    posToSet.y = hit.point.y;
+
+                    // Compute a rotation that preserves yaw (flatForward) but aligns up to the ground normal
+                    Quaternion targetSlope = GetSlopeAlignedRotation(flatForward, hit.normal);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetSlope, Time.deltaTime * slopeAlignSpeed);
+                }
+
+                transform.position = posToSet;
                 t += Time.deltaTime;
                 yield return null;
             }
-            transform.position = targetPos;
+
+            // Final position: ensure Y is adjusted to terrain to avoid snapping
+            Vector3 finalPos = targetPos;
+            if (Physics.Raycast(finalPos + Vector3.up * raycastHeight, Vector3.down, out var finalHit, raycastDistance, groundMask))
+            {
+                finalPos.y = finalHit.point.y;
+                Quaternion finalSlope = GetSlopeAlignedRotation(flatForward, finalHit.normal);
+                transform.rotation = finalSlope; // final exact alignment
+            }
+            transform.position = finalPos;
         }
     }
 
+    // face only changes yaw (horizontal), keeps up = world up for the yaw rotation
     IEnumerator FaceDirection(Vector3 dir)
     {
         if (dir.sqrMagnitude < 1e-5f) yield break;
 
+        Vector3 flatDir = new Vector3(dir.x, 0f, dir.z);
+        if (flatDir.sqrMagnitude < 1e-5f) yield break;
+
         Quaternion from = transform.rotation;
-        Quaternion to = Quaternion.LookRotation(dir, Vector3.up);
+        Quaternion to = Quaternion.LookRotation(flatDir.normalized, Vector3.up)
+                * Quaternion.Euler(0f, -90f, 0f); // -90 if +X is forward
+
 
         if (turnDuration <= 0f)
         {
@@ -172,23 +191,30 @@ public class ContinuousPatrolThreeWaypoints : MonoBehaviour
         transform.rotation = to;
     }
 
-    void AlignToGround()
+    // Build a rotation that preserves horizontal facing but uses 'normal' as up vector.
+    Quaternion GetSlopeAlignedRotation(Vector3 flatForward, Vector3 normal)
     {
-        Ray ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.down);
-        if (Physics.Raycast(ray, out RaycastHit hit, raycastDistance, groundMask))
-        {
-            Vector3 pos = transform.position;
-            pos.y = hit.point.y + heightOffset;
-            transform.position = pos;
-        }
+        // ensure flatForward is valid
+        Vector3 f = flatForward;
+        f.y = 0f;
+        if (f.sqrMagnitude < 1e-6f) f = Vector3.forward;
+
+        // right axis = perpendicular to normal and forward
+        Vector3 right = Vector3.Cross(normal, f).normalized;
+        // forward on plane = perpendicular to right and normal
+        Vector3 forwardOnPlane = Vector3.Cross(right, normal).normalized;
+        if (forwardOnPlane.sqrMagnitude < 1e-6f)
+            forwardOnPlane = f;
+
+        return Quaternion.LookRotation(forwardOnPlane, normal)
+       * Quaternion.Euler(0f, 0f, 0f); // -90° so +X becomes forward
+
     }
 
     int NextIndex(int current, ref int dir, int count)
     {
         if (pathMode == PathMode.Loop)
-        {
             return (current + 1) % count;
-        }
         else
         {
             int next = current + dir;
