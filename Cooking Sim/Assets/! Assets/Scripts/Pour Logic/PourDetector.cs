@@ -2,33 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class PourAudioClip
+{
+    public AudioSource audioSource;
+    public float delayBeforePlay = 0f;
+}
+
 public class PourDetector : MonoBehaviour
 {
-    public float pouringThreshold = 0.75f; // Threshold to detect pouring
-    public Transform pourPoint; // Point where the liquid is poured
+    [Header("Pour Settings")]
+    public float pouringThreshold = 0.75f;
+    public Transform pourPoint;
+    public Stream streamPrefab;
 
-    public Stream streamPrefab; // Prefab for the stream effect
     private Stream currentStream;
+    private bool isPouring = false;
 
-    float maxFill = 1f; // Maximum fill level of the object
-    public float fillLevel = 1f; // Current fill level of the object, 1 means full, 0 means empty
-    public float drainRate = 0.1f; // Rate at which the object drains, 10% per second
-    public float currentThreshold; // Current threshold for the fill level
+    [Header("Fill Settings")]
+    public float maxFill = 1f;
+    public float fillLevel = 1f;
+    public float drainRate = 0.1f;
+    public float currentThreshold;
 
-    bool isPouring = false;
+    [Header("Audio Sequence")]
+    public List<PourAudioClip> pourAudios = new List<PourAudioClip>();
 
-    // Update is called once per frame
     void Update()
     {
-        currentThreshold = Mathf.Lerp(-1f, pouringThreshold, fillLevel); // Adjust the threshold based on the fill level
-
+        currentThreshold = Mathf.Lerp(-1f, pouringThreshold, fillLevel);
         bool pourCheck = CalculateDotProduct() < currentThreshold;
 
-        // if (pourCheck) Debug.Log("POUR WATER");
         if (isPouring)
         {
-            // fillLevel -= drainRate * Time.deltaTime; // Drain the fill level based on the drain rate and time
-            fillLevel = Mathf.Clamp(fillLevel, 0f, maxFill); // Ensure the fill level does not exceed the maximum or go below zero
+            fillLevel = Mathf.Clamp(fillLevel, 0f, maxFill);
         }
 
         if (isPouring != pourCheck)
@@ -37,19 +44,31 @@ public class PourDetector : MonoBehaviour
             if (isPouring)
             {
                 currentStream = Instantiate<Stream>(streamPrefab, pourPoint.position, Quaternion.identity, transform);
-                currentStream.Begin(); // Start the stream effect
+                currentStream.Begin();
+
+                StopAllCoroutines();
+                StartCoroutine(PlayAudioSequence());
             }
             else
             {
-                currentStream.End(); // End the stream effect
-                currentStream = null; // Clear the reference to the current stream
+                if (currentStream != null)
+                {
+                    currentStream.End();
+                    currentStream = null;
+                }
+
+                // Stop all playing audio sources
+                foreach (var audioClip in pourAudios)
+                {
+                    if (audioClip.audioSource != null && audioClip.audioSource.isPlaying)
+                        audioClip.audioSource.Stop();
+                }
             }
         }
     }
 
     private float CalculateDotProduct()
     {
-        // Check the dot product between the object's up direction and the world up direction, if it passes a certain threshold, regardless of the rotation, we consider it pouring
         Vector3 upDirection = Vector3.up;
         float dotProduct = Vector3.Dot(transform.up, upDirection);
         return dotProduct;
@@ -57,14 +76,26 @@ public class PourDetector : MonoBehaviour
 
     private void Refill()
     {
-        fillLevel = maxFill; // Reset the fill level to maximum
+        fillLevel = maxFill;
     }
 
     private void OnGUI()
     {
         if (GUI.Button(new Rect(150, 10, 100, 20), "Refill"))
         {
-            Refill(); // Button to refill the object
+            Refill();
+        }
+    }
+
+    private IEnumerator PlayAudioSequence()
+    {
+        foreach (var audioClip in pourAudios)
+        {
+            if (audioClip.audioSource != null)
+            {
+                yield return new WaitForSeconds(audioClip.delayBeforePlay);
+                audioClip.audioSource.Play();
+            }
         }
     }
 }
