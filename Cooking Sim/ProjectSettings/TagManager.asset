@@ -15,6 +15,7 @@ TagManager:
   - XRController
   - FxTemporaire
   - Ground
+  - Flame
   layers:
   - Default
   - TransparentFX
