@@ -51,6 +51,19 @@ public class RicePourDetector : MonoBehaviour
         }
     }
 
+    public void StopPouring()
+    {
+        if (currentStream != null)
+        {
+            currentStream.End();
+            currentStream = null;
+        }
+        isPouring = false;
+
+        // Disable this script to stop pouring
+        this.enabled = false;
+    }
+
     private float CalculateDotProduct()
     {
         return Vector3.Dot(transform.up, Vector3.up);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class GameManager : MonoBehaviour
 {
@@ -99,6 +98,10 @@ public class GameManager : MonoBehaviour
     public PourDetector mashedPourDetector;
     public int mashedTextureIndex = 4;
     public GameObject mortar;
+    [Space(5)]
+    public PourDetector oilPourDetector;
+    public PourDetector waterPourDetector;
+    public RicePourDetector ricePourDetector;
 
     [Space(10)]
     [Header("Fufu Items")]
@@ -231,13 +234,44 @@ public class GameManager : MonoBehaviour
 
         if (currentStepIndex < currentRecipe.Count)
         {
-            if (selectedRecipe == RecipeType.JollofRice && currentStepIndex == mashedTextureIndex)
+            // LOGIC FOR MASHED TEXTURE IN JOLLOF RICE RECIPE, also gross in layout but it works for now
+            if (selectedRecipe == RecipeType.JollofRice && currentStepIndex == mashedTextureIndex && mashedTexture.activeInHierarchy != true)
             {
-                if (mashedTexture) mashedTexture.SetActive(true);
-                var grab = mortar ? mortar.GetComponent<XRGrabInteractable>() : null;
-                if (grab) grab.enabled = true;
-                var rb = mortar ? mortar.GetComponent<Rigidbody>() : null;
-                if (rb) rb.isKinematic = false;
+                Rigidbody rb = mortar.GetComponent<Rigidbody>();
+                if (rb != null) rb.isKinematic = false;
+            }
+            else
+            {
+                if (mashedTexture.activeInHierarchy == true)
+                {
+                    Debug.Log("The mashed texture is active");
+                    if (currentStepIndex == (mashedTextureIndex + 2))
+                    {
+                        Debug.Log("The current step index is " + currentStepIndex + " and the mashed texture should be disabled here.");
+                        mashedTexture.SetActive(false);
+                        mashedPourDetector.enabled = false;
+                    }
+                }
+            }
+
+            // LOGIC FOR DISABLING THE POURING DETECTORS IN JOLLOF RICE RECIPE, this is so gross but it works for now
+            if (selectedRecipe == RecipeType.JollofRice)
+            {
+                if (currentStepIndex == 5 && oilPourDetector.enabled == true)
+                {
+                    Debug.Log("The current step index is " + currentStepIndex + " and the oil should be disabled here.");
+                    oilPourDetector.StopPouring();
+                }
+                if (currentStepIndex == 8 && ricePourDetector.enabled == true)
+                {
+                    Debug.Log("The current step index is " + currentStepIndex + " and the rice should be disabled here.");
+                    ricePourDetector.StopPouring();
+                }
+                if (currentStepIndex == 9 && waterPourDetector.enabled == true)
+                {
+                    Debug.Log("The current step index is " + currentStepIndex + " and the water should be disabled here.");
+                    waterPourDetector.StopPouring();
+                }
             }
 
             ShowCurrentStep();

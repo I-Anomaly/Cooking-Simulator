@@ -67,6 +67,25 @@ public class PourDetector : MonoBehaviour
         }
     }
 
+    public void StopPouring()
+    {
+        if (currentStream != null)
+        {
+            currentStream.End();
+            currentStream = null;
+        }
+        isPouring = false;
+        // Stop all playing audio sources
+        foreach (var audioClip in pourAudios)
+        {
+            if (audioClip.audioSource != null && audioClip.audioSource.isPlaying)
+                audioClip.audioSource.Stop();
+        }
+
+        // Disable this script to stop pouring
+        this.enabled = false;
+    }
+
     private float CalculateDotProduct()
     {
         Vector3 upDirection = Vector3.up;
