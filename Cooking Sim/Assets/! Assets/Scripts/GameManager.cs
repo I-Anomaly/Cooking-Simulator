@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class GameManager : MonoBehaviour
 {
@@ -239,6 +240,8 @@ public class GameManager : MonoBehaviour
             {
                 Rigidbody rb = mortar.GetComponent<Rigidbody>();
                 if (rb != null) rb.isKinematic = false;
+                XRGrabInteractable grab = mortar.GetComponent<XRGrabInteractable>();
+                grab.enabled = true;
                 mashedTexture.SetActive(true);
             }
             else
@@ -263,12 +266,12 @@ public class GameManager : MonoBehaviour
                     Debug.Log("The current step index is " + currentStepIndex + " and the oil should be disabled here.");
                     oilPourDetector.StopPouring();
                 }
-                if (currentStepIndex == 8 && ricePourDetector.enabled == true)
+                if (currentStepIndex == 7 && ricePourDetector.enabled == true)
                 {
                     Debug.Log("The current step index is " + currentStepIndex + " and the rice should be disabled here.");
                     ricePourDetector.StopPouring();
                 }
-                if (currentStepIndex == 9 && waterPourDetector.enabled == true)
+                if (currentStepIndex == 8 && waterPourDetector.enabled == true)
                 {
                     Debug.Log("The current step index is " + currentStepIndex + " and the water should be disabled here.");
                     waterPourDetector.StopPouring();
