@@ -3,28 +3,25 @@ using UnityEngine;
 public class CampFire : MonoBehaviour
 {
     GameManager gm;
-
     int count;
 
     public GameObject fireGameObject; // GameObject to activate when the action count is reached
-
     public bool isFireOn = false; // Track if the fire is already on
     bool canLightOnFire = false;
+
+    [Header("Audio Settings")]
+    public AudioSource fireAudioSource; // Assign fire sound here
 
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        // Get the game manager instance
         gm = GameManager.Instance;
-
     }
 
-    // Increment the action count when the player interacts with the campfire, the -1 is just because the additional 'action' is the fire lighting
     public void IncrementProgress()
     {
         count++;
@@ -60,7 +57,7 @@ public class CampFire : MonoBehaviour
 
     public void LightFire()
     {
-        if (canLightOnFire == false)
+        if (!canLightOnFire)
         {
             Debug.Log("Cannot light fire yet, not enough actions completed.");
             return;
@@ -78,8 +75,20 @@ public class CampFire : MonoBehaviour
             Debug.LogError("fireGameObject is not assigned!");
             return;
         }
+
         isFireOn = true;
-        fireGameObject.SetActive(true); // Ensure the object is enabled
+        fireGameObject.SetActive(true);
+
+        // Play fire sound
+        if (fireAudioSource != null)
+        {
+            fireAudioSource.Play();
+        }
+        else
+        {
+            Debug.LogWarning("Fire AudioSource not assigned!");
+        }
+
         IncrementProgress();
     }
 }
