@@ -107,6 +107,7 @@ public class GameManager : MonoBehaviour
 
     [Space(10)]
     [Header("Fufu Items")]
+    public GameObject boilingEffect;
 
     [Header("Recipe Complete!")]
     public GameObject particleEffect;
@@ -194,8 +195,20 @@ public class GameManager : MonoBehaviour
         var step = currentRecipe[currentStepIndex];
 
         // Automatically complete steps that are set to Auto after the specified time
-        if ((step.actionType == ActionType.SecondsPassed || step.actionType == ActionType.Auto) && isTiming)
+        if (step.actionType == ActionType.SecondsPassed && isTiming)
         {
+            Debug.Log("Timing step " + currentStepIndex + " for " + step.actionCount + " seconds.");
+            elapsedTime += Time.deltaTime;
+            if (elapsedTime >= step.actionCount)
+            {
+                isTiming = false;
+                elapsedTime = 0f;
+                CompleteCurrentStep();
+            }
+        }
+
+        if (step.actionType == ActionType.Auto) {
+            Debug.Log("Timing step " + currentStepIndex + " for " + step.actionCount + " seconds.");
             elapsedTime += Time.deltaTime;
             if (elapsedTime >= step.actionCount)
             {
@@ -246,7 +259,7 @@ public class GameManager : MonoBehaviour
                 grab.enabled = true;
                 mashedTexture.SetActive(true);
             }
-            else
+            else if (selectedRecipe == RecipeType.JollofRice)
             {
                 if (mashedTexture.activeInHierarchy == true)
                 {
@@ -258,6 +271,12 @@ public class GameManager : MonoBehaviour
                         mashedPourDetector.enabled = false;
                     }
                 }
+            }
+
+            if (selectedRecipe == RecipeType.Fufu && currentStepIndex == 3 && boilingEffect != null)
+            {
+                Debug.Log("The boiling effect should be enabled now.");
+                boilingEffect.SetActive(true);
             }
 
             // LOGIC FOR DISABLING THE POURING DETECTORS IN JOLLOF RICE RECIPE, this is so gross but it works for now
@@ -347,6 +366,7 @@ public class GameManager : MonoBehaviour
     #region Action Management
     public void IncrementAction()
     {
+        Debug.Log("Incrementing action count for step " + currentStepIndex);
         actionCount++;
         if (actionCount >= currentRecipe[currentStepIndex].actionCount)
             CompleteCurrentStep();

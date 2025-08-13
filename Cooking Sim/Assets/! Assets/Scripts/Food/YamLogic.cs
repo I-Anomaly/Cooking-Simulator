@@ -31,7 +31,7 @@ public class YamLogic : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Pestle")) {             // Check if the game manager exists and the current step matches the required recipe step
-            
+            EnsureGameManager();
             if (gm == null || 
                 (gm.currentStepIndex != firstMashStep && 
                  gm.currentStepIndex != secondMashStep && 
@@ -39,6 +39,7 @@ public class YamLogic : MonoBehaviour
             {
                 return;
             }
+            Debug.Log("Yam has been mashed with the pestle.");
             mashCount++;
             var count = gm.currentRecipe[gm.currentStepIndex];
 
@@ -86,6 +87,18 @@ public class YamLogic : MonoBehaviour
         else if (gm.currentStepIndex == lastMashStep && mashTextures.Length > 2)
         {
             meshRenderer.material.mainTexture = mashTextures[2];
+        }
+    }
+
+    private void EnsureGameManager()
+    {
+        if (gm == null)
+        {
+            gm = GameManager.Instance;
+            if (gm == null)
+            {
+                Debug.LogWarning("GameManager.Instance is still null!");
+            }
         }
     }
 }

@@ -6,12 +6,12 @@ public class FillableController : MonoBehaviour
     public Transform fillableObject; // The object that will be filled
     public float currentFill = 0.01f; // Current fill amount
     public float fillRate = 0.1f; // Rate at which the object fills, 10% per second
+    public Renderer fillableRenderer; // Assign in inspector, the renderer of the fillable object
 
     [Space(10)]
     // For step 6 logic
     [Header("Jollof Oil Settings")]
     public string jollofOilStep = "oil_pot"; // The step index for Jollof Rice Step 4
-    public Renderer fillableRenderer; // Assign in inspector, the renderer of the fillable object
     public float maxOilFill;
 
     [Header("Jollof Water Settings")]
@@ -26,7 +26,7 @@ public class FillableController : MonoBehaviour
     public string jollofRiceStep = "rice_pot"; // The step index for Jollof Rice Step 5
 
     [Header("Fufu Settings")]
-    public int fufuWaterStepIndex = 1; // The step index for Fufu Step 1
+    public string fufuWaterStep = "boil_water"; // The step index for Fufu Step 1
     public float maxFufuWaterFill;
 
     private Color originalColor;
@@ -92,7 +92,10 @@ public class FillableController : MonoBehaviour
     // This is so nasty of a way to go about it ... ugh, if statements control what actions happen depending on the recipe step and liquid
     public void Fill(float amount, StreamType streamType)
     {
-        if (gm == null) return;
+        if (gm == null) {
+            Debug.LogWarning("GM is null");
+            EnsureGameManager();
+        }
 
         var recipe = gm.selectedRecipe;
         var step = gm.currentRecipe[gm.currentStepIndex];
@@ -163,7 +166,7 @@ public class FillableController : MonoBehaviour
         else if (recipe == GameManager.RecipeType.Fufu)
         {
             Debug.Log("Fufu water step: " + step + " with stream type: " + streamType);
-            if (step.stepID == "boil_water")
+            if (step.stepID == fufuWaterStep)
             {
                 fillableMeshRenderer.enabled = true; // Enable the mesh renderer for the fillable object
                 // Fufu logic; when filled, complete step
@@ -243,6 +246,18 @@ public class FillableController : MonoBehaviour
         {
             Debug.Log("Step 6 complete: Pot is fully red!");
             GameManager.Instance.CompleteCurrentStep();
+        }
+    }
+
+    private void EnsureGameManager()
+    {
+        if (gm == null)
+        {
+            gm = GameManager.Instance;
+            if (gm == null)
+            {
+                Debug.LogWarning("GameManager.Instance is still null!");
+            }
         }
     }
 
