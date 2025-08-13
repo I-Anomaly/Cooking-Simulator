@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
 
     [Header("UI - Instructions")]
     public TextMeshProUGUI stepText;
+    public TextMeshProUGUI stepWristText;
 
     [Header("Progress UI")]
     public Slider progressBar;
@@ -109,7 +110,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Recipe Complete!")]
     public GameObject particleEffect;
-    public AudioClip celebration;
+    public AudioClip jollofCelebration;
+    public AudioClip fufuCelebration;
 
     [Header("Highlighting")]
     public string highlightLayerName = "Outlined Objects";
@@ -282,10 +284,11 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // === RECIPE COMPLETED ===
+        // === RECIPE COMPLETED BEYOND HERE ===
         recipeComplete = true;
 
         if (stepText) stepText.text = "Recipe Complete!";
+        if (stepWristText) stepWristText.text = "Recipe Complete!";
 
         if (stepCounterText)
         {
@@ -300,7 +303,18 @@ public class GameManager : MonoBehaviour
         if (particleEffect)
             Instantiate(particleEffect, stepText ? stepText.transform.position : transform.position, Quaternion.identity);
 
-        if (audioSource && celebration) audioSource.PlayOneShot(celebration);
+        StopAllCoroutines();
+
+        if (selectedRecipe == RecipeType.JollofRice && jollofCelebration)
+        {
+            Debug.Log("Playing Jollof Rice celebration audio");
+            if (audioSourceVoices) audioSourceVoices.PlayOneShot(jollofCelebration);
+        }
+        else if (selectedRecipe == RecipeType.Fufu && fufuCelebration)
+        {
+            Debug.Log("Playing Fufu celebration audio");
+            if (audioSourceVoices) audioSourceVoices.PlayOneShot(fufuCelebration);
+        }
 
         // Option A: show a specific completion image GO with pop
         GameObject completionGO = (selectedRecipe == RecipeType.JollofRice) ? jollofCompleteImage : fufuCompleteImage;
@@ -391,7 +405,10 @@ public class GameManager : MonoBehaviour
         UpdateHighlightables();
 
         if (stepText)
-            stepText.text = $"{step.description} ({step.utensil})";
+            stepText.text = $"{step.description}";
+
+        if (stepText)
+            stepWristText.text = $"{step.description}";
 
         if (stepCounterText)
         {

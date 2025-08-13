@@ -7,31 +7,33 @@ public class FillableController : MonoBehaviour
     public float currentFill = 0.01f; // Current fill amount
     public float fillRate = 0.1f; // Rate at which the object fills, 10% per second
 
-    public float maxFill;
-
     [Space(10)]
     // For step 6 logic
     [Header("Jollof Oil Settings")]
-    public int jollofOilStepIndex = 4; // The step index for Jollof Rice Step 4
+    public string jollofOilStep = "oil_pot"; // The step index for Jollof Rice Step 4
     public Renderer fillableRenderer; // Assign in inspector, the renderer of the fillable object
+    public float maxOilFill;
 
     [Header("Jollof Water Settings")]
-    public float colorChangeDuration = 2f; // Time in seconds to fully change to blue
-    public int jollofWaterStepIndex = 7; // The step index for Jollof Rice Step 6
+    public string jollofWaterStep = "oil_pot"; // The step index for Jollof Rice Step 6
+    public float maxWaterFill;
 
-    [Header("Jollof Spices Settings")]
-    public int jollofSpicesStepIndex = 5; // The step index for Jollof Rice Step 5
+    [Header("Jollof Iru-Onion Settings")]
+    public string jollofSpicesStep = "iru_onion_pot"; // The step index for Jollof Rice Step 5
 
     [Header("Jollof Rice Settings")]
     public GameObject ricePile;
-    public int jollofRiceStepIndex = 6; // The step index for Jollof Rice Step 5
+    public string jollofRiceStep = "rice_pot"; // The step index for Jollof Rice Step 5
 
     [Header("Fufu Settings")]
     public int fufuWaterStepIndex = 1; // The step index for Fufu Step 1
+    public float maxFufuWaterFill;
 
-    private bool isChangingColor = false;
-    private float colorChangeTimer = 0f;
-    private bool isFullyRed = false;
+    private Color originalColor;
+    private bool isChangingToBlue = false;
+    private bool hasTurnedBlue = false;
+    private float blueChangeTimer = 0f;
+    private float blueChangeDuration = 0f;
 
     private bool isStepTimerActive = false;
     private float stepTimer = 0f;
@@ -53,31 +55,24 @@ public class FillableController : MonoBehaviour
         else
         {
             fillableMeshRenderer.enabled = false; // Disable the mesh renderer initially if it's not
+            originalColor = fillableRenderer.material.color; // Grab the original color of the fillable object
         }
     }
 
     void Update()
     {
-        // Step 6: Change color to red over time
-        if (GameManager.Instance != null && GameManager.Instance.currentStepIndex == 6 && isChangingColor && !isFullyRed)
+        // Step 6: Lerp color to blue over the step's actionCount seconds
+        if (isChangingToBlue && fillableRenderer != null && blueChangeDuration > 0f)
         {
-            // Debug.Log("Changing color to red...");
-            colorChangeTimer += Time.deltaTime;
-            float t = Mathf.Clamp01(colorChangeTimer / colorChangeDuration);
-
-            // Lerp from original color to red
-            if (fillableRenderer != null)
-            {
-                Color startColor = fillableRenderer.material.color;
-                Color targetColor = Color.red;
-                fillableRenderer.material.color = Color.Lerp(startColor, targetColor, t);
-            }
+            blueChangeTimer += Time.deltaTime;
+            float t = Mathf.Clamp01(blueChangeTimer / blueChangeDuration);
+            Color targetBlue = new(0f, 0f, 1f, originalColor.a); // Blue with original alpha
+            fillableRenderer.material.color = Color.Lerp(originalColor, targetBlue, t);
 
             if (t >= 1f)
             {
-                isFullyRed = true;
-                isChangingColor = false;
-                CheckStepCompletion();
+                isChangingToBlue = false;
+                hasTurnedBlue = true; // Mark as finished
             }
         }
 
@@ -100,52 +95,60 @@ public class FillableController : MonoBehaviour
         if (gm == null) return;
 
         var recipe = gm.selectedRecipe;
-        var step = gm.currentStepIndex;
-        var count = gm.currentRecipe[gm.currentStepIndex];
+        var step = gm.currentRecipe[gm.currentStepIndex];
 
         if (recipe == GameManager.RecipeType.JollofRice)
         {
             //Debug.Log("Jollof Rice step: " + step + " with stream type: " + streamType);
 
             // Oil step: fill and progress
-            if (step == jollofOilStepIndex && streamType == StreamType.Oil)
+            if (step.stepID == jollofOilStep && streamType == StreamType.Oil)
             {
                 fillableMeshRenderer.enabled = true; // Enable the mesh renderer for the fillable object
                 currentFill += amount * fillRate * Time.deltaTime;
-                currentFill = Mathf.Clamp(currentFill, 0, maxFill);
+                currentFill = Mathf.Clamp(currentFill, 0, maxOilFill);
                 fillableObject.localScale = new Vector3(1, currentFill, 1);
 
-                if (currentFill >= maxFill)
+                if (currentFill >= maxOilFill)
                 {
                     gm.CompleteCurrentStep();
                 }
             }
             // Spices step: start timer logic for sauce
-            else if (step == jollofSpicesStepIndex && streamType == StreamType.Sauce)
+            else if (step.stepID == jollofSpicesStep && streamType == StreamType.Sauce)
             {
                 Debug.Log("Progressing spices step: " + step + " with stream type: " + streamType);
                 if (!isStepTimerActive)
                 {
-                    stepTimerDuration = (float)count.actionCount;
+                    stepTimerDuration = (float)step.actionCount;
                     Debug.Log("Spices step timer duration is: " + stepTimerDuration);
                     stepTimer = 0f;
                     isStepTimerActive = true;
                 }
             }
             // Water step: start timer logic for water
-            else if (step == jollofWaterStepIndex && streamType == StreamType.Water)
+            else if (step.stepID == jollofWaterStep && streamType == StreamType.Water)
             {
                 Debug.Log("Progressing water step: " + step + " with stream type: " + streamType);
-                if (!isStepTimerActive)
+                currentFill += amount * fillRate * Time.deltaTime;
+                currentFill = Mathf.Clamp(currentFill, 0, maxWaterFill);
+                fillableObject.localScale = new Vector3(1, currentFill, 1);
+
+                // Only start color change if it hasn't already finished
+                if (!isChangingToBlue && !hasTurnedBlue)
                 {
-                    stepTimerDuration = (float)count.actionCount;
-                    Debug.Log("Water step timer duration is: " + stepTimerDuration);
-                    stepTimer = 0f;
-                    isStepTimerActive = true;
+                    blueChangeDuration = step.actionCount;
+                    blueChangeTimer = 0f;
+                    isChangingToBlue = true;
+                }
+
+                if (currentFill >= maxWaterFill)
+                {
+                    gm.CompleteCurrentStep();
                 }
             }
             // Rice step: enable rice pile
-            else if (step == jollofRiceStepIndex)
+            else if (step.stepID == jollofRiceStep)
             {
                 if (ricePile != null && !ricePile.activeSelf)
                 {
@@ -160,25 +163,25 @@ public class FillableController : MonoBehaviour
         else if (recipe == GameManager.RecipeType.Fufu)
         {
             Debug.Log("Fufu water step: " + step + " with stream type: " + streamType);
-            if (step == fufuWaterStepIndex)
+            if (step.stepID == "boil_water")
             {
                 fillableMeshRenderer.enabled = true; // Enable the mesh renderer for the fillable object
                 // Fufu logic; when filled, complete step
                 currentFill += amount * fillRate * Time.deltaTime;
-                currentFill = Mathf.Clamp(currentFill, 0, maxFill);
+                currentFill = Mathf.Clamp(currentFill, 0, maxFufuWaterFill);
                 fillableObject.localScale = new Vector3(1, currentFill, 1);
 
-                if (currentFill >= maxFill && streamType == StreamType.Water)
+                if (currentFill >= maxFufuWaterFill && streamType == StreamType.Water)
                     gm.CompleteCurrentStep();
 
-            } else if (step == 7)
+            } else if (step.stepID == "sprinkle_yams_1")
             {
-                stepTimerDuration = (float)count.actionCount;
+                stepTimerDuration = (float)step.actionCount;
                 Debug.Log("Watering number 1 duration is: " + stepTimerDuration);
                 isStepTimerActive = true;
-            } else if (step == 9)
+            } else if (step.stepID == "sprinkle_yams_2")
             {
-                stepTimerDuration = (float)count.actionCount;
+                stepTimerDuration = (float)step.actionCount;
                 Debug.Log("Watering number 2 duration is: " + stepTimerDuration);
                 isStepTimerActive = true;
             }
@@ -236,7 +239,7 @@ public class FillableController : MonoBehaviour
     // have any reference to the Fufu recipe.
     private void CheckStepCompletion()
     {
-        if (isFullyRed && GameManager.Instance != null && GameManager.Instance.currentStepIndex == 6)
+        if (isChangingToBlue && GameManager.Instance != null && GameManager.Instance.currentStepIndex == 6)
         {
             Debug.Log("Step 6 complete: Pot is fully red!");
             GameManager.Instance.CompleteCurrentStep();
