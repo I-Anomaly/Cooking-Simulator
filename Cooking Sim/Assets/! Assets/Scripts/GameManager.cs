@@ -239,6 +239,7 @@ public class GameManager : MonoBehaviour
             {
                 Rigidbody rb = mortar.GetComponent<Rigidbody>();
                 if (rb != null) rb.isKinematic = false;
+                mashedTexture.SetActive(true);
             }
             else
             {
