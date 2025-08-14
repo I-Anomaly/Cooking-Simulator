@@ -111,6 +111,7 @@ public class GameManager : MonoBehaviour
     public GameObject fufuBall;
     public GameObject yamTexture; // has logic to change texture when mashed
     public GameObject interactionZone; // dunno if this is messing with the fufu ball
+    public XRSocketInteractor spoonSocket; // for the spoon to interact with the yams
 
     [Header("Recipe Complete!")]
     public GameObject particleEffect;
@@ -302,6 +303,15 @@ public class GameManager : MonoBehaviour
                     Debug.Log("Disabling interaction zone for Fufu ball.");
                     interactionZone.SetActive(false); // Disable the interaction zone
                 }
+            }
+
+            if (selectedRecipe == RecipeType.Fufu && currentStepIndex == 5 && spoonSocket != null)
+            {
+                Debug.Log("Enabling spoon socket for Fufu recipe.");
+                spoonSocket.enabled = true; // Enable the spoon socket for Fufu recipe
+            } else {
+                Debug.Log("Disabling spoon socket for Fufu recipe.");
+                spoonSocket.enabled = false;
             }
 
             // LOGIC FOR DISABLING THE POURING DETECTORS IN JOLLOF RICE RECIPE, this is so gross but it works for now
@@ -743,8 +753,8 @@ public class GameManager : MonoBehaviour
     // For testing purposes only: Complete the current step when the button is pressed
     private void OnGUI()
     {
-        //if (GUI.Button(new Rect(10, 80, 100, 20), "Complete Step"))
-        //    CompleteCurrentStep();
+        if (GUI.Button(new Rect(10, 80, 100, 20), "Complete Step"))
+            CompleteCurrentStep();
     }
 
 

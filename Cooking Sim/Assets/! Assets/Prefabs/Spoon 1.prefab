@@ -260,7 +260,7 @@ MonoBehaviour:
   m_SnapToColliderVolume: 1
   m_ReinitializeDynamicAttachEverySingleGrab: 1
   m_AttachEaseInTime: 0.15
-  m_MovementType: 0
+  m_MovementType: 2
   m_VelocityDamping: 1
   m_VelocityScale: 1
   m_AngularVelocityDamping: 1
@@ -314,6 +314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b0610e1d4ce90645b640378e7221cf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stirringAudio: {fileID: 0}
 --- !u!114 &7185237140277039798
 MonoBehaviour:
   m_ObjectHideFlags: 0

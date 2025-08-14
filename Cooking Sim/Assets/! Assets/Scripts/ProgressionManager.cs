@@ -230,18 +230,13 @@ public class ProgressionManager : MonoBehaviour
 
     private void EnsureGameManager()
     {
-        Debug.Log("Ensuring GameManager is initialized...");
         if (gm == null)
         {
             gm = GameManager.Instance;
-            Debug.Log("Ensuring GameManager is initialized: " + (gm != null));
             if (gm == null)
             {
                 Debug.LogWarning("GameManager.Instance is still null!");
             }
-        } else
-        {
-            Debug.Log("GameManager is already initialized.");
         }
     }
 }
