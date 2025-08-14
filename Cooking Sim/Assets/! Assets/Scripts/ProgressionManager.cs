@@ -11,7 +11,6 @@ public class ProgressionManager : MonoBehaviour
 
     [Space(10)]
     public bool disableOnComplete = true; // Disable this object when the step is completed
-    public bool isFufu = false; // Set this to true if this item is Fufu, which does not need to check multiple step IDs
 
     GameManager gm;
 
@@ -20,8 +19,9 @@ public class ProgressionManager : MonoBehaviour
 
     private void Start()
     {
-        EnsureGameManager();
-        Debug.Log("ProgressionManager started. GameManager initialized: " + (gm != null));
+        // Get the game manager instance
+        gm = GameManager.Instance;
+        if (gm == null || gm.currentRecipe.Count == 0) return;
     }
 
     /// <summary>
@@ -42,37 +42,26 @@ public class ProgressionManager : MonoBehaviour
         // Check if the entering object has the required tag
         if (!string.IsNullOrEmpty(requiredTag) && !other.CompareTag(requiredTag))
         {
-            Debug.LogWarning("Object (" + other.name + ") does not have the required tag: " + requiredTag);
+            // Debug.LogWarning("Object (" + other.name + ") does not have the required tag: " + requiredTag);
             return;
         }
 
-        EnsureGameManager();
-        if (gm == null || gm.currentRecipe == null || gm.currentRecipe.Count == 0)
+        // If the game manager is not initialized or has no current recipe, exit
+        if (gm == null || gm.currentRecipe.Count == 0)
         {
-            Debug.LogWarning("GameManager or currentRecipe is null/empty.");
+            Debug.LogWarning("GameManager is not initialized or current recipe is empty.");
             return;
         }
-        if (gm.currentStepIndex < 0 || gm.currentStepIndex >= gm.currentRecipe.Count)
-        {
-            Debug.LogWarning("currentStepIndex is out of bounds: " + gm.currentStepIndex);
-            return;
-        }
+
+        // Check if the current step ID string matches the step ID of the current step in the recipe
         var step = gm.currentRecipe[gm.currentStepIndex];
-        if (!string.Equals(stepID, step.stepID, System.StringComparison.Ordinal) && !isFufu)
+        if (!string.Equals(stepID, step.stepID, System.StringComparison.Ordinal))
         {
             Debug.Log("This is not the correct step for this item. Current step ID: " + step.stepID + ", expected step ID: " + stepID);
-        }
-        else
-        {
-            // Lazy workaround for Fufu to not need to check multiple step IDS
+            return;
         }
 
         Debug.Log("Proceeding with step: " + step.description);
-
-        if (gm == null)
-        {
-            Debug.LogWarning("GameManager is null!");
-        }
 
         // Proceed based on step type
         switch (stepType)
@@ -101,21 +90,11 @@ public class ProgressionManager : MonoBehaviour
         if (other.CompareTag(requiredTag) == false) {
             return;
         }
-        
         GameObject otherRoot = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.gameObject;
         triggeredObjects.Remove(otherRoot);
 
-        if (gm == null || gm.currentRecipe == null || gm.currentRecipe.Count == 0)
-        {
-            Debug.LogWarning("GameManager or currentRecipe is null/empty.");
-            return;
-        }
-        if (gm.currentStepIndex < 0 || gm.currentStepIndex >= gm.currentRecipe.Count)
-        {
-            Debug.LogWarning("currentStepIndex is out of bounds: " + gm.currentStepIndex);
-            return;
-        }
-        var step = gm.currentRecipe[gm.currentStepIndex];
+        int currentStepIndex = gm.currentStepIndex;
+        var step = gm.currentRecipe[currentStepIndex];
 
         switch (stepType)
         {
@@ -126,7 +105,7 @@ public class ProgressionManager : MonoBehaviour
                 }
                 break;
             case StepType.Actions:
-                if (step.actionType == ActionType.NumberOfActions && !isFufu)
+                if (step.actionType == ActionType.NumberOfActions)
                 {
                     // If the item is taken out, reduce the action count (it will not proceed until ALL items are in)
                     gm.ReduceAction();
@@ -140,6 +119,7 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     public void TryProgressStep()
     {
+        // If the game manager is not initialized or has no current recipe, exit
         if (gm == null || gm.currentRecipe.Count == 0)
             return;
 
@@ -225,23 +205,6 @@ public class ProgressionManager : MonoBehaviour
         {
             Debug.Log("Disabling object: " + gameObject.name);
             gameObject.SetActive(false);
-        }
-    }
-
-    private void EnsureGameManager()
-    {
-        Debug.Log("Ensuring GameManager is initialized...");
-        if (gm == null)
-        {
-            gm = GameManager.Instance;
-            Debug.Log("Ensuring GameManager is initialized: " + (gm != null));
-            if (gm == null)
-            {
-                Debug.LogWarning("GameManager.Instance is still null!");
-            }
-        } else
-        {
-            Debug.Log("GameManager is already initialized.");
         }
     }
 }

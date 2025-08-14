@@ -6,9 +6,8 @@ public class StirManager : MonoBehaviour
 {
     private bool isInWater = false;
 
-    [Header("Audio Settings")]
-    public AudioSource stirringAudio; // Assign the stirring AudioSource here
-
+    // The purpose of this script is to manage the stirring action in water.
+    // This will only be active when the player is at step 8 in the game.
     void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Water"))
@@ -22,10 +21,6 @@ public class StirManager : MonoBehaviour
             Debug.Log("Stirring in water");
             isInWater = true;
             GameManager.Instance.StartTimedAction();
-
-            // Start stirring sound
-            if (stirringAudio != null && !stirringAudio.isPlaying)
-                stirringAudio.Play();
         }
     }
 
@@ -34,10 +29,6 @@ public class StirManager : MonoBehaviour
         if (GameManager.Instance.recipeComplete == true)
         {
             isInWater = false;
-
-            // Stop sound if recipe is done
-            if (stirringAudio != null && stirringAudio.isPlaying)
-                stirringAudio.Pause();
         }
     }
 
@@ -52,9 +43,5 @@ public class StirManager : MonoBehaviour
         Debug.Log("Stopped stirring in water");
         isInWater = false;
         GameManager.Instance.StopTimedAction();
-
-        // Pause stirring sound
-        if (stirringAudio != null && stirringAudio.isPlaying)
-            stirringAudio.Pause();
     }
 }

@@ -51,8 +51,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.03
-  m_Height: 0.2
+  m_Radius: 0.06
+  m_Height: 0.35
   m_Direction: 1
   m_Center: {x: 0, y: 0.03, z: 0}
 --- !u!1 &6955896201061385812
@@ -83,8 +83,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 0.07712695, y: 0.07712695, z: 0.07712695}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7006596895984199688}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -373,7 +373,6 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 5dfb3ac8c4c2539409e729c2e02ca4fe, type: 3}
   requiredRecipeStep: 1
   requiredBoilStep: 3
-  requiredMortarAndPestleStep: 5
   yamRenderer: {fileID: 5566410533974745199}
 --- !u!114 &7185940367196018589
 MonoBehaviour:
@@ -387,8 +386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  respawnOnGround: 1
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
-  respawnSound: {fileID: 8300000, guid: 8c114009197f7164ead84bd49cb15d7d, type: 3}
+  respawnSound: {fileID: 0}
   respawnDelay: 1
