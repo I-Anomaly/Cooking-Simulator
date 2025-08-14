@@ -743,8 +743,8 @@ public class GameManager : MonoBehaviour
     // For testing purposes only: Complete the current step when the button is pressed
     private void OnGUI()
     {
-        if (GUI.Button(new Rect(10, 80, 100, 20), "Complete Step"))
-            CompleteCurrentStep();
+        //if (GUI.Button(new Rect(10, 80, 100, 20), "Complete Step"))
+        //    CompleteCurrentStep();
     }
 
 

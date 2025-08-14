@@ -100,10 +100,10 @@ public class PourDetector : MonoBehaviour
 
     private void OnGUI()
     {
-        if (GUI.Button(new Rect(150, 10, 100, 20), "Refill"))
-        {
-            Refill();
-        }
+        //if (GUI.Button(new Rect(150, 10, 100, 20), "Refill"))
+        //{
+        //    Refill();
+        //}
     }
 
     private IEnumerator PlayAudioSequence()

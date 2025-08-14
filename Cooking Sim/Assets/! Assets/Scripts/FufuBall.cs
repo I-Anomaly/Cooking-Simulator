@@ -75,9 +75,9 @@ public class FufuBall : MonoBehaviour
 
     private void OnGUI()
     {
-        if (GUI.Button(new Rect(10, 200, 100, 20), "Fufu Squeeze"))
-        {
-            FufuBalled();
-        }
+        //if (GUI.Button(new Rect(10, 200, 100, 20), "Fufu Squeeze"))
+        //{
+        //    FufuBalled();
+        //}
     }
 }
