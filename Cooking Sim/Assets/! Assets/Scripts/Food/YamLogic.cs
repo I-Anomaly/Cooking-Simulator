@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class YamLogic : MonoBehaviour
@@ -26,32 +24,30 @@ public class YamLogic : MonoBehaviour
     {
         meshRenderer = GetComponent<MeshRenderer>();
         gm = GameManager.Instance;
+        EnsureGameManager();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Pestle")) {             // Check if the game manager exists and the current step matches the required recipe step
-            
-            if (gm == null || 
-                (gm.currentStepIndex != firstMashStep && 
-                 gm.currentStepIndex != secondMashStep && 
-                 gm.currentStepIndex != lastMashStep))
+        if (other.CompareTag("Pestle"))
+        {
+            if (gm.currentStepIndex != firstMashStep &&
+                 gm.currentStepIndex != secondMashStep &&
+                 gm.currentStepIndex != lastMashStep)
             {
                 return;
             }
+
+            Debug.Log("Yam has been mashed with the pestle.");
             mashCount++;
             var count = gm.currentRecipe[gm.currentStepIndex];
 
             if (mashCount >= count.actionCount)
             {
-                Debug.Log("Yam is fully mashed, incrementing action.");
+                Debug.Log("Yam is fully mashed, incrementing action. " + mashCount + "/" + count.actionCount);
                 UpdateTexture();
                 gm.CompleteCurrentStep();
-                if (gm.currentStepIndex == lastMashStep + 1)
-                {
-                    fufuBall.SetActive(true); // Show the fufu ball after the last step
-                    this.gameObject.SetActive(false); // Hide the yam after the last step
-                }
+                mashCount = 0; // Reset mash count for the next step
             }
         }
     }
@@ -59,11 +55,13 @@ public class YamLogic : MonoBehaviour
     // Update the yam's texture based on the current peel count by incrementing through the 'list' of textures
     private void UpdateTexture()
     {
+        Debug.Log("Updating yam texture for step: " + gm.currentStepIndex + ". The first mash step is " + firstMashStep);
         if (meshRenderer == null) return;
 
         // Change texture and enable renderer based on the completed step
         if (gm.currentStepIndex == firstMashStep && mashTextures.Length > 0)
         {
+            Debug.Log("Setting first mash texture and destroying yams.");
             meshRenderer.enabled = true;
             meshRenderer.material.mainTexture = mashTextures[0];
 
@@ -86,6 +84,18 @@ public class YamLogic : MonoBehaviour
         else if (gm.currentStepIndex == lastMashStep && mashTextures.Length > 2)
         {
             meshRenderer.material.mainTexture = mashTextures[2];
+        }
+    }
+
+    private void EnsureGameManager()
+    {
+        if (gm == null)
+        {
+            gm = GameManager.Instance;
+            if (gm == null)
+            {
+                Debug.LogWarning("GameManager.Instance is still null!");
+            }
         }
     }
 }
