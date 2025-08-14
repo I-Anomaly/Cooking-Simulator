@@ -108,6 +108,9 @@ public class GameManager : MonoBehaviour
     [Space(10)]
     [Header("Fufu Items")]
     public GameObject boilingEffect;
+    public GameObject fufuBall;
+    public GameObject yamTexture; // has logic to change texture when mashed
+    public GameObject interactionZone; // dunno if this is messing with the fufu ball
 
     [Header("Recipe Complete!")]
     public GameObject particleEffect;
@@ -130,13 +133,17 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null) instance = this;
-        else Destroy(gameObject);
-    }
+        if (instance == null)
+        {
+            instance = this;
+            Debug.Log("GameManager instance created.");
+        }
+        else
+        {
+            Debug.Log("GameManager instance already exists, destroying duplicate.");
+            Destroy(gameObject);
+        }
 
-    void Start()
-    {
-        Fader.FadeIn(); // Fade in from black at the start of the scene
         currentRecipe.Clear(); // Ensure the current recipe is clear before populating it
 
         switch (selectedRecipe)
@@ -144,6 +151,11 @@ public class GameManager : MonoBehaviour
             case RecipeType.JollofRice: currentRecipe = new List<RecipeStep>(jollofRiceRecipe); break;
             case RecipeType.Fufu: currentRecipe = new List<RecipeStep>(fufuRecipe); break;
         }
+    }
+
+    void Start()
+    {
+        Fader.FadeIn(); // Fade in from black at the start of the scene
 
         if (progressBar != null)
         {
@@ -207,8 +219,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (step.actionType == ActionType.Auto) {
-            Debug.Log("Timing step " + currentStepIndex + " for " + step.actionCount + " seconds.");
+        if (step.actionType == ActionType.Auto)
+        {
+            // Debug.Log("Timing step " + currentStepIndex + " for " + step.actionCount + " seconds.");
             elapsedTime += Time.deltaTime;
             if (elapsedTime >= step.actionCount)
             {
@@ -277,6 +290,18 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("The boiling effect should be enabled now.");
                 boilingEffect.SetActive(true);
+            }
+
+            if (selectedRecipe == RecipeType.Fufu && currentStepIndex == 11 && fufuBall != null && yamTexture != null)
+            {
+                Debug.Log("Final step reached, showing fufu ball.");
+                fufuBall.SetActive(true); // Show the fufu ball after the last step
+                yamTexture.SetActive(false); // Hide the yam after the last step
+                if (interactionZone != null)
+                {
+                    Debug.Log("Disabling interaction zone for Fufu ball.");
+                    interactionZone.SetActive(false); // Disable the interaction zone
+                }
             }
 
             // LOGIC FOR DISABLING THE POURING DETECTORS IN JOLLOF RICE RECIPE, this is so gross but it works for now

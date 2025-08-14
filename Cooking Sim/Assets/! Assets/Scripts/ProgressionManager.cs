@@ -20,13 +20,8 @@ public class ProgressionManager : MonoBehaviour
 
     private void Start()
     {
-        // Get the game manager instance
-        gm = GameManager.Instance;
-        if (gm == null || gm.currentRecipe.Count == 0)
-        {
-            Debug.LogWarning("GameManager is not initialized or current recipe is empty. The current recipe count is " + gm.currentRecipe.Count);
-            return;
-        }
+        EnsureGameManager();
+        Debug.Log("ProgressionManager started. GameManager initialized: " + (gm != null));
     }
 
     /// <summary>
@@ -77,7 +72,6 @@ public class ProgressionManager : MonoBehaviour
         if (gm == null)
         {
             Debug.LogWarning("GameManager is null!");
-            EnsureGameManager();
         }
 
         // Proceed based on step type
@@ -111,7 +105,6 @@ public class ProgressionManager : MonoBehaviour
         GameObject otherRoot = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.gameObject;
         triggeredObjects.Remove(otherRoot);
 
-        EnsureGameManager();
         if (gm == null || gm.currentRecipe == null || gm.currentRecipe.Count == 0)
         {
             Debug.LogWarning("GameManager or currentRecipe is null/empty.");
@@ -147,7 +140,6 @@ public class ProgressionManager : MonoBehaviour
     /// </summary>
     public void TryProgressStep()
     {
-        EnsureGameManager();
         if (gm == null || gm.currentRecipe.Count == 0)
             return;
 
@@ -238,13 +230,18 @@ public class ProgressionManager : MonoBehaviour
 
     private void EnsureGameManager()
     {
+        Debug.Log("Ensuring GameManager is initialized...");
         if (gm == null)
         {
             gm = GameManager.Instance;
+            Debug.Log("Ensuring GameManager is initialized: " + (gm != null));
             if (gm == null)
             {
                 Debug.LogWarning("GameManager.Instance is still null!");
             }
+        } else
+        {
+            Debug.Log("GameManager is already initialized.");
         }
     }
 }

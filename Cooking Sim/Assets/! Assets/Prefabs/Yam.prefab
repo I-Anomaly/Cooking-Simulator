@@ -51,8 +51,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.06
-  m_Height: 0.35
+  m_Radius: 0.03
+  m_Height: 0.2
   m_Direction: 1
   m_Center: {x: 0, y: 0.03, z: 0}
 --- !u!1 &6955896201061385812
@@ -83,8 +83,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.07712695, y: 0.07712695, z: 0.07712695}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7006596895984199688}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -390,5 +390,5 @@ MonoBehaviour:
   respawnOnGround: 1
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
-  respawnSound: {fileID: 0}
+  respawnSound: {fileID: 8300000, guid: 8c114009197f7164ead84bd49cb15d7d, type: 3}
   respawnDelay: 1

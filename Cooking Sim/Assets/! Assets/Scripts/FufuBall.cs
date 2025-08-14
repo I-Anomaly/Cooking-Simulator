@@ -22,8 +22,27 @@ public class FufuBall : MonoBehaviour
         }
     }
 
+    private void EnsureGameManager()
+    {
+        if (gm == null)
+        {
+            gm = GameManager.Instance;
+            if (gm == null)
+            {
+                Debug.LogWarning("GameManager.Instance is still null!");
+            }
+        }
+    }
+
     public void FufuBalled()
     {
+        if (gm == null)
+        {
+            EnsureGameManager();
+            actionCount = gm.currentRecipe[gm.currentStepIndex].actionCount;
+            if (gm == null) return; // Exit if GameManager is still null
+        }
+
         hitCount++;
         Debug.Log("Fufu ball hit count: " + hitCount);
 
