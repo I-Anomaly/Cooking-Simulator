@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 9044228289077024172}
   - component: {fileID: 4241086194993348345}
   - component: {fileID: 8316995284480968721}
+  - component: {fileID: 2968153280896237561}
   m_Layer: 0
   m_Name: Fufu Ball Done
   m_TagString: Untagged
@@ -331,3 +332,20 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
+--- !u!114 &2968153280896237561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7149351532361325501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawnOnGround: 1
+  respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
+    type: 3}
+  respawnSound: {fileID: 0}
+  respawnDelay: 1

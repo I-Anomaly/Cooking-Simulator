@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4132761519921747998}
   - component: {fileID: 1597360577726419634}
-  - component: {fileID: 1732416436269902502}
   m_Layer: 0
   m_Name: Colliders
   m_TagString: Untagged
@@ -56,27 +55,6 @@ CapsuleCollider:
   m_Height: 0.22
   m_Direction: 1
   m_Center: {x: 0.05, y: 0.11, z: 0}
---- !u!65 &1732416436269902502
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2200294785462857531}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.06, y: 0.13, z: 0.16}
-  m_Center: {x: 0.02, y: 0.1, z: 0}
 --- !u!1 &2962512399146941480
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,6 +91,7 @@ Transform:
   m_Children:
   - {fileID: 2935359403944556819}
   - {fileID: 4132761519921747998}
+  - {fileID: 740978445784015233}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &8793484602606366322
@@ -157,6 +136,7 @@ MonoBehaviour:
   m_InteractionManager: {fileID: 0}
   m_Colliders:
   - {fileID: 1597360577726419634}
+  - {fileID: 9102620104573474787}
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -247,7 +227,7 @@ MonoBehaviour:
       m_Calls: []
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1
@@ -307,6 +287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980bfe8a4af6a94586dd3ab3de3d92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  respawnOnGround: 1
   respawnParticleEffect: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
     type: 3}
   respawnSound: {fileID: 0}
@@ -323,9 +304,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 664b0b2f77a77dc4b826982460e0e94f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentRecipeStep: 2
   stepType: 2
-  utensilType: 
+  stepID: onion_bowl
   requiredTag: Mortar
   disableOnComplete: 1
 --- !u!114 &-5605021817765127488
@@ -341,6 +321,59 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   disableAtStep: 4
+--- !u!1 &5831413027884856259
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 740978445784015233}
+  - component: {fileID: 9102620104573474787}
+  m_Layer: 0
+  m_Name: Colliders (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &740978445784015233
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5831413027884856259}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 813927390445067816}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &9102620104573474787
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5831413027884856259}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.06, y: 0.13, z: 0.16}
+  m_Center: {x: 0.02, y: 0.1, z: 0}
 --- !u!1001 &3402122820640759544
 PrefabInstance:
   m_ObjectHideFlags: 0
