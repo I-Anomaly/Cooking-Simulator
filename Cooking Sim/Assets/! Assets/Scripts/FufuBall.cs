@@ -36,13 +36,6 @@ public class FufuBall : MonoBehaviour
 
     public void FufuBalled()
     {
-        if (gm == null)
-        {
-            EnsureGameManager();
-            actionCount = gm.currentRecipe[gm.currentStepIndex].actionCount;
-            if (gm == null) return; // Exit if GameManager is still null
-        }
-
         hitCount++;
         Debug.Log("Fufu ball hit count: " + hitCount);
 
