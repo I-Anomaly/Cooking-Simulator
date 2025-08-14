@@ -30,13 +30,10 @@ public class YamPeeling : MonoBehaviour
     private GameManager gameManager;
     void Start()
     {
-        Debug.Log("YamPeeling script started.");
-        EnsureGameManager();
+        gameManager = GameManager.Instance;
         if (yamRenderer == null)
             yamRenderer = GetComponent<Renderer>();
         UpdateTexture();
-        var step = gameManager.currentRecipe[gameManager.currentStepIndex];
-        Debug.Log("GameManager is active, current step: " + gameManager.currentStepIndex + " and the task is " + step.description);
     }
 
     // Call this method from the Knife script when the yam is hit
@@ -101,19 +98,6 @@ public class YamPeeling : MonoBehaviour
         if (yamRenderer != null && peelCount > 0 && peelCount <= peelingTextures.Length)
         {
             yamRenderer.material.mainTexture = peelingTextures[peelCount - 1];
-        }
-    }
-
-    private void EnsureGameManager()
-    {
-        Debug.Log("Ensuring GameManager is initialized...");
-        if (gameManager == null)
-        {
-            gameManager = GameManager.Instance;
-            if (gameManager == null)
-            {
-                Debug.LogWarning("GameManager.Instance is still null!");
-            }
         }
     }
 }

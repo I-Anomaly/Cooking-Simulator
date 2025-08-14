@@ -23,16 +23,16 @@ public class RicePourDetector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentThreshold = Mathf.Lerp(-1f, PourThreshold, fillLevel);
+        currentThreshold = Mathf.Lerp(-1f,PourThreshold,fillLevel);
         bool pourcheck = CalculateDotProduct() < currentThreshold;
         if (pourcheck)
             // Debug.Log("Pour Water!");
 
-            if (isPouring)
-            {
+        if(isPouring)
+        {
 
-                fillLevel -= drainRate * Time.deltaTime;
-            }
+            fillLevel -= drainRate*Time.deltaTime;
+        }
         if (isPouring != pourcheck)
         {
             isPouring = pourcheck;
@@ -49,19 +49,6 @@ public class RicePourDetector : MonoBehaviour
                 currentStream = null;
             }
         }
-    }
-
-    public void StopPouring()
-    {
-        if (currentStream != null)
-        {
-            currentStream.End();
-            currentStream = null;
-        }
-        isPouring = false;
-
-        // Disable this script to stop pouring
-        this.enabled = false;
     }
 
     private float CalculateDotProduct()

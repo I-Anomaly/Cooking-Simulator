@@ -22,18 +22,6 @@ public class FufuBall : MonoBehaviour
         }
     }
 
-    private void EnsureGameManager()
-    {
-        if (gm == null)
-        {
-            gm = GameManager.Instance;
-            if (gm == null)
-            {
-                Debug.LogWarning("GameManager.Instance is still null!");
-            }
-        }
-    }
-
     public void FufuBalled()
     {
         hitCount++;
@@ -75,9 +63,9 @@ public class FufuBall : MonoBehaviour
 
     private void OnGUI()
     {
-        //if (GUI.Button(new Rect(10, 200, 100, 20), "Fufu Squeeze"))
-        //{
-        //    FufuBalled();
-        //}
+        if (GUI.Button(new Rect(10, 200, 100, 20), "Fufu Squeeze"))
+        {
+            FufuBalled();
+        }
     }
 }
