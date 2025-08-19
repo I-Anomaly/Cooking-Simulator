@@ -309,7 +309,7 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("Enabling spoon socket for Fufu recipe.");
                 spoonSocket.enabled = true; // Enable the spoon socket for Fufu recipe
-            } else {
+            } else if (selectedRecipe == RecipeType.Fufu) {
                 Debug.Log("Disabling spoon socket for Fufu recipe.");
                 spoonSocket.enabled = false;
             }
