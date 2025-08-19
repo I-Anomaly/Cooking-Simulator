@@ -10,7 +10,11 @@ public class CampFire : MonoBehaviour
     bool canLightOnFire = false;
 
     [Header("Audio Settings")]
-    public AudioSource fireAudioSource; // Assign fire sound here
+    [Tooltip("Boom ignite sound (played once)")]
+    public AudioSource igniteAudioSource;
+
+    [Tooltip("Looping fire crackling sound (set to loop = true in Inspector)")]
+    public AudioSource crackleAudioSource;
 
     private void Awake()
     {
@@ -79,14 +83,25 @@ public class CampFire : MonoBehaviour
         isFireOn = true;
         fireGameObject.SetActive(true);
 
-        // Play fire sound
-        if (fireAudioSource != null)
+        // Play ignite sound once
+        if (igniteAudioSource != null)
         {
-            fireAudioSource.Play();
+            igniteAudioSource.Play();
         }
         else
         {
-            Debug.LogWarning("Fire AudioSource not assigned!");
+            Debug.LogWarning("Ignite AudioSource not assigned!");
+        }
+
+        // Play crackle sound in loop after ignite
+        if (crackleAudioSource != null)
+        {
+            crackleAudioSource.loop = true; // ensure looping
+            crackleAudioSource.PlayDelayed(igniteAudioSource != null ? igniteAudioSource.clip.length : 0f);
+        }
+        else
+        {
+            Debug.LogWarning("Crackle AudioSource not assigned!");
         }
 
         IncrementProgress();

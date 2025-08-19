@@ -24,19 +24,30 @@ public class YamPeeling : MonoBehaviour
     [Tooltip("Assign the Renderer component of the yam.")]
     public Renderer yamRenderer;
 
+    [Header("Peeling Sounds")]
+    [Tooltip("Assign one or more yam peeling sounds here.")]
+    public AudioClip[] peelingSounds;
+    private AudioSource audioSource;
+
     private int peelCount = 0;
 
     // Reference to GameManager (assumes a singleton pattern)
     private GameManager gameManager;
+
     void Start()
     {
-        Debug.Log("YamPeeling script started.");
-        EnsureGameManager();
+        gameManager = GameManager.Instance;
+
         if (yamRenderer == null)
             yamRenderer = GetComponent<Renderer>();
+
+        // Setup AudioSource if not already attached
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
         UpdateTexture();
-        var step = gameManager.currentRecipe[gameManager.currentStepIndex];
-        Debug.Log("GameManager is active, current step: " + gameManager.currentStepIndex + " and the task is " + step.description);
     }
 
     // Call this method from the Knife script when the yam is hit
@@ -46,8 +57,11 @@ public class YamPeeling : MonoBehaviour
         if (gameManager == null || gameManager.currentStepIndex != requiredRecipeStep)
             return;
 
-        if (collision.gameObject.CompareTag("Knife") == false)
+        if (!collision.gameObject.CompareTag("Knife"))
             return;
+
+        // Play a random peeling sound
+        PlayPeelingSound();
 
         if (peelCount < peelingTextures.Length)
         {
@@ -71,7 +85,8 @@ public class YamPeeling : MonoBehaviour
         {
             Debug.Log("Yam is in water, incrementing action.");
             gameManager.IncrementAction();
-        } else if (other.CompareTag("Mortar") && GameManager.Instance.currentStepIndex == requiredMortarAndPestleStep)
+        }
+        else if (other.CompareTag("Mortar") && GameManager.Instance.currentStepIndex == requiredMortarAndPestleStep)
         {
             Debug.Log("Yam is in mortar and pestle, incrementing action.");
             gameManager.IncrementAction();
@@ -104,16 +119,12 @@ public class YamPeeling : MonoBehaviour
         }
     }
 
-    private void EnsureGameManager()
+    private void PlayPeelingSound()
     {
-        Debug.Log("Ensuring GameManager is initialized...");
-        if (gameManager == null)
+        if (peelingSounds.Length > 0 && audioSource != null)
         {
-            gameManager = GameManager.Instance;
-            if (gameManager == null)
-            {
-                Debug.LogWarning("GameManager.Instance is still null!");
-            }
+            int randomIndex = Random.Range(0, peelingSounds.Length);
+            audioSource.PlayOneShot(peelingSounds[randomIndex]);
         }
     }
 }
