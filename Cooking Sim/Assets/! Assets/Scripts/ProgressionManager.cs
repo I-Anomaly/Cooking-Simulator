@@ -21,7 +21,6 @@ public class ProgressionManager : MonoBehaviour
     private void Start()
     {
         EnsureGameManager();
-        Debug.Log("ProgressionManager started. GameManager initialized: " + (gm != null));
     }
 
     /// <summary>
@@ -42,7 +41,7 @@ public class ProgressionManager : MonoBehaviour
         // Check if the entering object has the required tag
         if (!string.IsNullOrEmpty(requiredTag) && !other.CompareTag(requiredTag))
         {
-            Debug.LogWarning("Object (" + other.name + ") does not have the required tag: " + requiredTag);
+            // Debug.LogWarning("Object (" + other.name + ") does not have the required tag: " + requiredTag);
             return;
         }
 

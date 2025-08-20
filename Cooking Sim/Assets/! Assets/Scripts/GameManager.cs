@@ -309,7 +309,9 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("Enabling spoon socket for Fufu recipe.");
                 spoonSocket.enabled = true; // Enable the spoon socket for Fufu recipe
-            } else if (selectedRecipe == RecipeType.Fufu) {
+            }
+            else if (selectedRecipe == RecipeType.Fufu)
+            {
                 Debug.Log("Disabling spoon socket for Fufu recipe.");
                 spoonSocket.enabled = false;
             }
@@ -339,6 +341,27 @@ public class GameManager : MonoBehaviour
         }
 
         // === RECIPE COMPLETED BEYOND HERE ===
+
+        void FillProgressToEnd()
+        {
+            if (!progressBar) return;
+
+            // stop any ongoing smooth-fill
+            if (_barRoutine != null) { StopCoroutine(_barRoutine); _barRoutine = null; }
+
+            // set both absolute and normalized values
+            progressBar.value = progressBar.maxValue;
+            progressBar.normalizedValue = 1f;
+
+            // if your Fill is an Image set to "Filled", force its fillAmount too
+            if (progressBar.fillRect)
+            {
+                var fillImg = progressBar.fillRect.GetComponent<Image>();
+                if (fillImg && fillImg.type == Image.Type.Filled)
+                    fillImg.fillAmount = 1f;
+            }
+        }
+
         recipeComplete = true;
 
         if (stepText) stepText.text = "Recipe Complete!";
@@ -350,9 +373,9 @@ public class GameManager : MonoBehaviour
             stepCounterText.color = Color.green;
         }
 
-        SmoothFill(progressBar != null ? progressBar.maxValue : 0f);
+        FillProgressToEnd();
 
-        if (_activeStepImageGO) SetGOVisible(_activeStepImageGO, false, imageFadeDuration);
+        HideCurrentStepVisuals();
 
         if (particleEffect)
             Instantiate(particleEffect, stepText ? stepText.transform.position : transform.position, Quaternion.identity);
@@ -382,6 +405,31 @@ public class GameManager : MonoBehaviour
             StartCoroutine(ScaleUpRecipeImage()); // scales to 3x
         }
 
+    }
+
+    void HideCurrentStepVisuals()
+    {
+        // stop any fade-in/out that might still be running
+        if (_imageSwapRoutine != null) { StopCoroutine(_imageSwapRoutine); _imageSwapRoutine = null; }
+
+        // hard-disable the currently active step image
+        if (_activeStepImageGO)
+        {
+            var cg = _activeStepImageGO.GetComponent<CanvasGroup>();
+            if (cg) cg.alpha = 0f;
+            _activeStepImageGO.SetActive(false);
+            _activeStepImageGO = null;
+        }
+
+        // also make sure all step images are off (safety net)
+        HideAllStepImages();
+
+        // clear any highlight leftovers
+        if (previousHighlightables != null)
+        {
+            SetObjectsLayer(previousHighlightables, defaultLayerName);
+            previousHighlightables = null;
+        }
     }
 
     /// <summary>
@@ -753,9 +801,10 @@ public class GameManager : MonoBehaviour
     // For testing purposes only: Complete the current step when the button is pressed
     private void OnGUI()
     {
+#if UNITY_EDITOR
         if (GUI.Button(new Rect(10, 80, 100, 20), "Complete Step"))
             CompleteCurrentStep();
     }
-
+#endif
 
 }
