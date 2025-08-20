@@ -13,6 +13,7 @@ public class DisableSelf : MonoBehaviour
         // Make sure GameManager instance exists and recipe is running
         if (GameManager.Instance != null && GameManager.Instance.currentStepIndex >= disableAtStep)
         {
+            Debug.Log("Disabling object: " + gameObject.name);
             gameObject.SetActive(false);
             Destroy(this);
         }

@@ -60,6 +60,7 @@ public class ProgressionManager : MonoBehaviour
         if (!string.Equals(stepID, step.stepID, System.StringComparison.Ordinal) && !isFufu)
         {
             Debug.Log("This is not the correct step for this item. Current step ID: " + step.stepID + ", expected step ID: " + stepID);
+            return;
         }
         else
         {
@@ -77,15 +78,15 @@ public class ProgressionManager : MonoBehaviour
         switch (stepType)
         {
             case StepType.Instant:
-                Debug.Log("Performing instant action for step: " + step.description);
+                Debug.Log("Performing instant action for step: " + step.description + " from the object " + this.gameObject.name);
                 gm.CompleteCurrentStep();
                 break;
             case StepType.Actions:
-                Debug.Log("Performing action for step: " + step.description);
+                Debug.Log("Performing action for step: " + step.description + " from the object " + this.gameObject.name);
                 gm.IncrementAction();
                 break;
             case StepType.Seconds:
-                Debug.Log("Timing action for step: " + step.description);
+                Debug.Log("Timing action for step: " + step.description + " from the object " + this.gameObject.name);
                 gm.StartTimedAction();
                 break;
         }
