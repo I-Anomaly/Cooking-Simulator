@@ -112,6 +112,9 @@ public class GameManager : MonoBehaviour
     public GameObject yamTexture; // has logic to change texture when mashed
     public GameObject interactionZone; // dunno if this is messing with the fufu ball
     public XRSocketInteractor spoonSocket; // for the spoon to interact with the yams
+    public GameObject waterMesh;
+    public GameObject smokeWater;
+    public bool disableWater = false; // if true, disable water game object
 
     [Header("Recipe Complete!")]
     public GameObject particleEffect;
@@ -307,8 +310,15 @@ public class GameManager : MonoBehaviour
 
             if (selectedRecipe == RecipeType.Fufu && currentStepIndex == 5 && spoonSocket != null)
             {
-                Debug.Log("Enabling spoon socket for Fufu recipe.");
                 spoonSocket.enabled = true; // Enable the spoon socket for Fufu recipe
+                if (waterMesh != null && disableWater)
+                {
+                    waterMesh.SetActive(false); // Disable the water mesh if disableWater is true
+                    if (smokeWater != null && smokeWater.activeInHierarchy)
+                    {
+                        smokeWater.SetActive(false);
+                    }
+                }
             }
             else if (selectedRecipe == RecipeType.Fufu)
             {

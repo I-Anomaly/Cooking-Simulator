@@ -10,6 +10,7 @@ public class FufuBall : MonoBehaviour
     public Transform ballMesh; // Assign your child mesh in the inspector
     public Vector3[] ballScales; // Set desired scales for each hit in the inspector
     public GameObject finishedFufuBallPrefab;
+    public GameObject bowl;
     public GameObject particleEffect;
 
     void Start()
@@ -65,6 +66,12 @@ public class FufuBall : MonoBehaviour
             Instantiate(finishedFufuBallPrefab, spawnPos, Quaternion.identity);
         }
 
+        if (bowl != null)
+        {
+            Instantiate(particleEffect, bowl.transform.position, Quaternion.identity);
+            bowl.SetActive(true); // Enable the bowl
+        }
+
         if (particleEffect != null)
         {
             Instantiate(particleEffect, basePosition, Quaternion.identity);
@@ -72,12 +79,15 @@ public class FufuBall : MonoBehaviour
 
         Destroy(gameObject); // Destroy the original FufuBall object
     }
-
+#if UNITY_EDITOR
     private void OnGUI()
     {
-        //if (GUI.Button(new Rect(10, 200, 100, 20), "Fufu Squeeze"))
-        //{
-        //    FufuBalled();
-        //}
+
+        if (GUI.Button(new Rect(10, 200, 100, 20), "Fufu Squeeze"))
+        {
+            FufuBalled();
+        }
+
     }
+#endif
 }
