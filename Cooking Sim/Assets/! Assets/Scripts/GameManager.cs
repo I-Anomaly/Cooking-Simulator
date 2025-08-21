@@ -808,10 +808,11 @@ public class GameManager : MonoBehaviour
     public void StartTimedAction() => isTiming = true;
     public void StopTimedAction() => isTiming = false;
 
+#if UNITY_EDITOR
     // For testing purposes only: Complete the current step when the button is pressed
     private void OnGUI()
     {
-#if UNITY_EDITOR
+
         if (GUI.Button(new Rect(10, 80, 100, 20), "Complete Step"))
             CompleteCurrentStep();
     }
